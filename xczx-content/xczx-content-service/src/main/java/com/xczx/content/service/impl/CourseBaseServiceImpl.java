@@ -2,6 +2,7 @@ package com.xczx.content.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.xczx.base.exception.XczxException;
 import com.xczx.base.model.dto.PageParams;
 import com.xczx.base.model.vo.PageResult;
 import com.xczx.content.mapper.CourseBaseMapper;
@@ -68,7 +69,9 @@ public class CourseBaseServiceImpl implements CourseBaseService {
     @Transactional
     public CourseBaseInfo createBaseCourse(Long companyId, AddCourseDto addCourseDto) {
         // 参数校验
-
+        if (addCourseDto.getPrice() < 0 || addCourseDto.getOriginalPrice() < 0) {
+            throw new XczxException("价格必须大于0");
+        }
         // 将数据插入到课程基本信息表
         CourseBase courseBase = new CourseBase();
         BeanUtils.copyProperties(addCourseDto, courseBase);
@@ -84,7 +87,7 @@ public class CourseBaseServiceImpl implements CourseBaseService {
 
         int affectRows = courseBaseMapper.insert(courseBase);
         if (affectRows <= 0) {
-            throw new RuntimeException("新增课程基本信息失败");
+            throw new XczxException("新增课程基本信息失败");
         }
 
         // 将数据插入到课程基本营销信息表
@@ -93,7 +96,7 @@ public class CourseBaseServiceImpl implements CourseBaseService {
         courseMarket.setId(courseBase.getId());
         affectRows = courseMarketService.saveCourseMarket(courseMarket);
         if (affectRows <= 0) {
-            throw new RuntimeException("新增课程营销信息失败");
+            throw new XczxException("新增课程营销信息失败");
         }
 
         // 组装响应结果

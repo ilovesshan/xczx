@@ -23,7 +23,7 @@ public class AddCourseDto {
     private String name;
 
     @NotEmpty(message = "适用人群不能为空")
-    @Size(message = "适用人群内容过少", min = 10)
+    @Size(message = "适用人群内容过少", min = 3)
     @ApiModelProperty(value = "适用人群", required = true)
     private String users;
 
@@ -57,9 +57,9 @@ public class AddCourseDto {
 
     @ApiModelProperty(value = "价格")
     private Float price;
+
     @ApiModelProperty(value = "原价")
     private Float originalPrice;
-
 
     @ApiModelProperty(value = "qq")
     private String qq;

@@ -9,6 +9,7 @@ import com.xczx.content.model.vo.CourseBaseInfo;
 import com.xczx.content.service.CourseBaseService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,7 +39,7 @@ public class CourseBaseInfoController {
 
     @ApiOperation("课程基础信息新增接口")
     @PostMapping("/course")
-    public CourseBaseInfo createBaseCourse(@RequestBody AddCourseDto addCourseDto) {
+    public CourseBaseInfo createBaseCourse(@Validated @RequestBody AddCourseDto addCourseDto) {
         return courseBaseService.createBaseCourse(1001101L, addCourseDto);
     }
 }
