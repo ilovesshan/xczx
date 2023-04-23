@@ -6,13 +6,16 @@ import com.xczx.content.model.vo.CourseCategoryVo;
 import java.util.List;
 
 /**
- * <p>
- * 课程基本信息 Mapper 接口
- * </p>
+ * Created with IntelliJ IDEA.
  *
- * @author ilovesshan
+ * @author: ilovesshan
+ * @date: 2023/4/23
+ * @description:
  */
+
 public interface CourseCategoryMapper extends BaseMapper<CourseCategoryVo> {
 
     List<CourseCategoryVo> selectAll();
+
+    String selectNameById(String id);
 }

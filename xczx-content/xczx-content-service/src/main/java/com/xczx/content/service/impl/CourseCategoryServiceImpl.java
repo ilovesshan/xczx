@@ -57,4 +57,10 @@ public class CourseCategoryServiceImpl implements CourseCategoryService {
                 });
         return responseCourseCategoryList;
     }
+
+    @Override
+    public String selectNameById(String id) {
+        return courseCategoryMapper.selectNameById(id);
+    }
+
 }

@@ -11,6 +11,9 @@ import java.util.List;
  * @date: 2023/4/23
  * @description:
  */
+
 public interface CourseCategoryService {
     List<CourseCategoryVo> queryCourseCategory(String pid);
+
+    String selectNameById(String id);
 }

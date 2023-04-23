@@ -1,7 +1,7 @@
 package com.xczx.content.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.xczx.content.model.po.CourseBase;
+import com.xczx.content.model.po.CourseMarket;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,5 +10,5 @@ import com.xczx.content.model.po.CourseBase;
  * @date: 2023/4/23
  * @description:
  */
-
-public interface CourseBaseMapper extends BaseMapper<CourseBase> { }
+public interface CourseMarketMapper extends BaseMapper<CourseMarket> {
+}
