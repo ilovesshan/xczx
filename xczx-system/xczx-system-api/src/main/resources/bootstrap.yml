@@ -1,0 +1,30 @@
+server:
+  servlet:
+    context-path: /system
+  port: 63110
+
+#微服务配置
+spring:
+  application:
+    name: system-api
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.1.131:3306/xc_001_system?serverTimezone=UTC&userUnicode=true&useSSL=false&
+    username: root
+    password: mysql
+
+
+swagger:
+  title: "学成在线系统管理"
+  description: "系统管理对整个系统及进行维护和升级"
+  base-package: com.xczx.system
+  enabled: true
+  version: 1.0.0
+
+#logging:
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+
+#  config: classpath:log4j2-dev.xml

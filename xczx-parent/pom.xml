@@ -9,6 +9,7 @@
     <version>1.0.0</version>
     <modules>
         <module>../xczx-content</module>
+        <module>../xczx-system</module>
     </modules>
     <packaging>pom</packaging>
 
