@@ -23,15 +23,15 @@ import java.util.List;
 public class PageResult<T> implements Serializable {
     private static final long serialVersionUID = -1083828076042745069L;
 
-    // 数据列表
-    private List<T> items;
-
-    //总记录数
-    private long counts;
-
     //当前页码
     private long page;
 
     //每页记录数
     private long pageSize;
+
+    //总记录数
+    private long counts;
+
+    // 数据列表
+    private List<T> items;
 }

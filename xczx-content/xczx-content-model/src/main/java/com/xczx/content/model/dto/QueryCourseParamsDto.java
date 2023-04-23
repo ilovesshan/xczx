@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Data
-@ToString()
+@ToString(doNotUseGetters = true)
 @NoArgsConstructor
 @AllArgsConstructor
 public class QueryCourseParamsDto {
@@ -22,5 +22,4 @@ public class QueryCourseParamsDto {
     // 发布状态
     @ApiModelProperty("发布状态")
     private String publishStatus;
-
 }
