@@ -138,7 +138,6 @@ public class CourseBaseServiceImpl implements CourseBaseService {
         // 更新课程营销信息表
         CourseMarket courseMarket = new CourseMarket();
         BeanUtils.copyProperties(updateCourseDto, courseMarket);
-        // courseBase.setId();
         boolean updateSuccess = courseMarketService.updateById(courseMarket);
         if (!updateSuccess) {
             throw new XczxException("课程营销信息更新失败");

@@ -1,8 +1,7 @@
 package com.xczx.base.exception;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.EqualsAndHashCode;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,8 +12,12 @@ import lombok.NoArgsConstructor;
  */
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 public class XczxException extends RuntimeException {
     private String errMessage;
+
+    public XczxException(String message) {
+        super(message);
+        this.errMessage = message;
+    }
 }

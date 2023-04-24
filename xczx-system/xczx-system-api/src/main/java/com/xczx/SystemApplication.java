@@ -1,4 +1,4 @@
-package com.xczx.system;
+package com.xczx;
 
 import com.spring4all.swagger.EnableSwagger2Doc;
 import org.mybatis.spring.annotation.MapperScan;
