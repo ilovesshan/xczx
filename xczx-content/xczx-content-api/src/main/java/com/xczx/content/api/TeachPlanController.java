@@ -1,12 +1,11 @@
 package com.xczx.content.api;
 
+import com.xczx.content.model.dto.InsertOrUpdateCoursePlanDto;
 import com.xczx.content.model.vo.TeachPlanBaseInfoVo;
 import com.xczx.content.service.TeachPlanService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -29,6 +28,12 @@ public class TeachPlanController {
     @ApiOperation("查询课程计划树")
     @GetMapping("/teachplan/{courseId}/tree-nodes")
     public List<TeachPlanBaseInfoVo> selectCoursePlanTree(@PathVariable("courseId") String courseId) {
-        return  teachPlanService.selectCoursePlanTree(courseId);
+        return teachPlanService.selectCoursePlanTree(courseId);
+    }
+
+    @ApiOperation("新增/修改课程计划")
+    @PostMapping("/teachplan")
+    public void insertOrUpdateCoursePlan(@RequestBody InsertOrUpdateCoursePlanDto insertOrUpdateCoursePlanDto) {
+        teachPlanService.insertOrUpdateCoursePlan(insertOrUpdateCoursePlanDto);
     }
 }

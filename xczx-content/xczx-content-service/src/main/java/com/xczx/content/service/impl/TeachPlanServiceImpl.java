@@ -1,12 +1,16 @@
 package com.xczx.content.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.xczx.base.exception.XczxException;
 import com.xczx.content.mapper.TeachPlanMapper;
+import com.xczx.content.model.dto.InsertOrUpdateCoursePlanDto;
 import com.xczx.content.model.po.Teachplan;
 import com.xczx.content.model.vo.TeachPlanBaseInfoVo;
 import com.xczx.content.model.vo.TeachPlanVo;
 import com.xczx.content.service.TeachPlanService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -39,19 +43,48 @@ public class TeachPlanServiceImpl extends ServiceImpl<TeachPlanMapper, Teachplan
                 .collect(Collectors.toMap(TeachPlanVo::getId, key -> key, (k1, k2) -> k1));
 
         selectedTeachPlanBaseInfo.forEach(teachPlanBaseInfoVo -> {
-                    if (teachPlanBaseInfoVo.getParentid() == 0) {
-                        if (teachPlanBaseInfoVo.getTeachPlanTreeNodes() == null) {
-                            teachPlanBaseInfoVo.setTeachPlanTreeNodes(new ArrayList<>());
-                        }
-                        responseTeachPlanBaseInfo.add(teachPlanBaseInfoVo);
-                    }
+            if (teachPlanBaseInfoVo.getParentid() == 0) {
+                if (teachPlanBaseInfoVo.getTeachPlanTreeNodes() == null) {
+                    teachPlanBaseInfoVo.setTeachPlanTreeNodes(new ArrayList<>());
+                }
+                responseTeachPlanBaseInfo.add(teachPlanBaseInfoVo);
+            }
 
-                    TeachPlanBaseInfoVo parentNode = teachPlanBaseInfoVoMap.get(teachPlanBaseInfoVo.getParentid());
-                    if (parentNode != null) {
-                        parentNode.getTeachPlanTreeNodes().add(teachPlanBaseInfoVo);
-                    }
-                });
+            TeachPlanBaseInfoVo parentNode = teachPlanBaseInfoVoMap.get(teachPlanBaseInfoVo.getParentid());
+            if (parentNode != null) {
+                parentNode.getTeachPlanTreeNodes().add(teachPlanBaseInfoVo);
+            }
+        });
 
         return responseTeachPlanBaseInfo;
+    }
+
+    @Override
+    public void insertOrUpdateCoursePlan(InsertOrUpdateCoursePlanDto insertOrUpdateCoursePlanDto) {
+        Long planId = insertOrUpdateCoursePlanDto.getId();
+        if (planId == null) {
+            // 新增
+            Teachplan teachplan = new Teachplan();
+            BeanUtils.copyProperties(insertOrUpdateCoursePlanDto, teachplan);
+
+            // 设置排序规则值 查询同级目录下最大的排序号
+            LambdaQueryWrapper<Teachplan> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+            lambdaQueryWrapper.eq(Teachplan::getParentid, teachplan.getParentid());
+            lambdaQueryWrapper.eq(Teachplan::getCourseId, teachplan.getCourseId());
+            Integer orderBy = teachPlanMapper.selectCount(lambdaQueryWrapper);
+            teachplan.setOrderby(orderBy + 1);
+            int affectRows = teachPlanMapper.insert(teachplan);
+            if (affectRows <= 0) {
+                throw new XczxException("课程计划信息新增失败");
+            }
+        } else {
+            // 更新
+            Teachplan selectedTeachPlan = teachPlanMapper.selectById(planId);
+            BeanUtils.copyProperties(insertOrUpdateCoursePlanDto, selectedTeachPlan);
+            int affectRows = teachPlanMapper.updateById(selectedTeachPlan);
+            if (affectRows <= 0) {
+                throw new XczxException("课程计划信息更新失败");
+            }
+        }
     }
 }
