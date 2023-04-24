@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xczx.content.mapper.TeachPlanMapper">
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, pname, parentid, grade, media_type, start_time, end_time, description, timelength, orderby, course_id, course_pub_id, status, is_preview, create_date, change_date
+    </sql>
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.xczx.content.model.vo.TeachPlanBaseInfoVo" autoMapping="true">
+        <association property="teachplanMedia" javaType="com.xczx.content.model.vo.TeachPlanMediaVo" autoMapping="true" columnPrefix="tmp_"/>
+    </resultMap>
+
+    <select id="selectPlanById" resultMap="BaseResultMap">
+        select
+            tp.id, tp.pname, tp.parentid, tp.grade, tp.media_type, tp.start_time, tp.end_time, tp.description, tp.timelength, tp.orderby, tp.course_id, tp.course_pub_id, tp.status, tp.is_preview, tp.create_date, tp.change_date,
+            tpm.id tmp_id, tpm.media_id tmp_media_id, tpm.teachplan_id tmp_teachplan_id, tpm.course_id tmp_course_id, tpm.media_fileName tmp_media_fileName, tpm.create_date tmp_create_date, tpm.create_people tmp_create_people, tpm.change_people tmp_change_people
+        from
+            teachplan tp left join teachplan_media tpm on tp.id = tpm.teachplan_id
+        where
+            tp.course_id = #{courseId}
+        order by
+            tp.id
+    </select>
+</mapper>
