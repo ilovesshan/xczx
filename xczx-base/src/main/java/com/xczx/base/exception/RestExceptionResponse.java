@@ -3,7 +3,6 @@ package com.xczx.base.exception;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.http.HttpStatus;
 
 /**
  * Created with IntelliJ IDEA.
@@ -17,7 +16,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RestExceptionResponse {
-    private HttpStatus code = HttpStatus.INTERNAL_SERVER_ERROR;
+    private int code;
     private String requestId;
     private String requestTime;
     private String errMessage;

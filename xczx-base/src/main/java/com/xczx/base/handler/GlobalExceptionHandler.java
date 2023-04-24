@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
         String requestId = MDC.get("requestId");
         String requestTime = MDC.get("requestTime");
         log.error("XczxException：", e);
-        return new RestExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, requestId, requestTime, e.getMessage());
+        return new RestExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), requestId, requestTime, e.getMessage());
     }
 
     // 处理JSR303异常
@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
         String requestId = MDC.get("requestId");
         String requestTime = MDC.get("requestTime");
         log.error("JSR303Exception：", e);
-        return new RestExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, requestId, requestTime, error.getDefaultMessage());
+        return new RestExceptionResponse(HttpStatus.BAD_REQUEST.value(), requestId, requestTime, error.getDefaultMessage());
     }
 
     // 处理其他异常
@@ -51,6 +51,6 @@ public class GlobalExceptionHandler {
         String requestId = MDC.get("requestId");
         String requestTime = MDC.get("requestTime");
         log.error("Exception：", e);
-        return new RestExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR, requestId, requestTime, "系统异常请联系管理员查看日志信息");
+        return new RestExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), requestId, requestTime, "系统异常请联系管理员查看日志信息");
     }
 }
