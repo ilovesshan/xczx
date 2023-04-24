@@ -36,4 +36,10 @@ public class TeachPlanController {
     public void insertOrUpdateCoursePlan(@RequestBody InsertOrUpdateCoursePlanDto insertOrUpdateCoursePlanDto) {
         teachPlanService.insertOrUpdateCoursePlan(insertOrUpdateCoursePlanDto);
     }
+
+    @ApiOperation("删除课程计划")
+    @DeleteMapping("//teachplan/{planId}")
+    public void deleteCoursePlan(@PathVariable("planId") String planId) {
+        teachPlanService.deleteCoursePlan(planId);
+    }
 }

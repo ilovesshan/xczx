@@ -6,8 +6,10 @@ import com.xczx.base.exception.XczxException;
 import com.xczx.content.mapper.TeachPlanMapper;
 import com.xczx.content.model.dto.InsertOrUpdateCoursePlanDto;
 import com.xczx.content.model.po.Teachplan;
+import com.xczx.content.model.po.TeachplanMedia;
 import com.xczx.content.model.vo.TeachPlanBaseInfoVo;
 import com.xczx.content.model.vo.TeachPlanVo;
+import com.xczx.content.service.TeachPlanMediaService;
 import com.xczx.content.service.TeachPlanService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -32,6 +34,9 @@ public class TeachPlanServiceImpl extends ServiceImpl<TeachPlanMapper, Teachplan
 
     @Resource
     private TeachPlanMapper teachPlanMapper;
+
+    @Resource
+    private TeachPlanMediaService teachPlanMediaService;
 
     @Override
     public List<TeachPlanBaseInfoVo> selectCoursePlanTree(String courseId) {
@@ -85,6 +90,41 @@ public class TeachPlanServiceImpl extends ServiceImpl<TeachPlanMapper, Teachplan
             if (affectRows <= 0) {
                 throw new XczxException("课程计划信息更新失败");
             }
+        }
+    }
+
+    @Override
+    public void deleteCoursePlan(String planId) {
+        Teachplan selectedTeachPlan = teachPlanMapper.selectById(planId);
+
+        if (selectedTeachPlan == null) {
+            throw new XczxException("课程计划不存在，无效的课程计划ID");
+        }
+
+        if (selectedTeachPlan.getParentid() == 0) {
+            // 删除父节点
+            LambdaQueryWrapper<Teachplan> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Teachplan::getParentid, selectedTeachPlan.getId());
+            Integer currentNodeChildCount = teachPlanMapper.selectCount(queryWrapper);
+            if (currentNodeChildCount > 0) {
+                throw new XczxException("课程计划信息还有子级信息，无法操作");
+            }
+            deleteCourseById(planId);
+        } else {
+            // 删除子节点
+            deleteCourseById(planId);
+
+            // 删除关联的媒资信息
+            LambdaQueryWrapper<TeachplanMedia> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(TeachplanMedia::getTeachplanId, selectedTeachPlan.getId());
+            teachPlanMediaService.remove(queryWrapper);
+        }
+    }
+
+    private void deleteCourseById(String planId) {
+        int affectRows = teachPlanMapper.deleteById(planId);
+        if (affectRows <= 0) {
+            throw new XczxException("课程计划信息删除失败");
         }
     }
 }

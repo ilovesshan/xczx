@@ -20,4 +20,6 @@ public interface TeachPlanService extends IService<Teachplan> {
     List<TeachPlanBaseInfoVo> selectCoursePlanTree(String courseId);
 
     void insertOrUpdateCoursePlan(InsertOrUpdateCoursePlanDto insertOrUpdateCoursePlanDto);
+
+    void deleteCoursePlan(String planId);
 }
