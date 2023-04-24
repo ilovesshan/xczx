@@ -8,6 +8,7 @@ import com.xczx.base.model.vo.PageResult;
 import com.xczx.content.mapper.CourseBaseMapper;
 import com.xczx.content.model.dto.AddCourseDto;
 import com.xczx.content.model.dto.QueryCourseParamsDto;
+import com.xczx.content.model.dto.UpdateCourseDto;
 import com.xczx.content.model.po.CourseBase;
 import com.xczx.content.model.po.CourseMarket;
 import com.xczx.content.model.vo.CourseBaseInfo;
@@ -99,9 +100,14 @@ public class CourseBaseServiceImpl implements CourseBaseService {
             throw new XczxException("新增课程营销信息失败");
         }
 
-        // 组装响应结果
-        CourseBase base = courseBaseMapper.selectById(courseBase.getId());
-        CourseMarket market = courseMarketService.getById(courseBase.getId());
+        return selectCourseBaseInfoById(courseBase.getId());
+    }
+
+    @Override
+    public CourseBaseInfo selectCourseBaseInfoById(Long courseId) {
+
+        CourseBase base = courseBaseMapper.selectById(courseId);
+        CourseMarket market = courseMarketService.getById(courseId);
 
         CourseBaseInfo courseBaseInfo = new CourseBaseInfo();
 
@@ -116,5 +122,29 @@ public class CourseBaseServiceImpl implements CourseBaseService {
             BeanUtils.copyProperties(market, courseBaseInfo);
         }
         return courseBaseInfo;
+    }
+
+    @Override
+    @Transactional
+    public CourseBaseInfo updateBaseCourse(Long companyId, UpdateCourseDto updateCourseDto) {
+        // 更新课程基本信息表
+        CourseBase courseBase = new CourseBase();
+        BeanUtils.copyProperties(updateCourseDto, courseBase);
+        int affectRows = courseBaseMapper.updateById(courseBase);
+        if (affectRows <= 0) {
+            throw new XczxException("课程基本信息更新失败");
+        }
+
+        // 更新课程营销信息表
+        CourseMarket courseMarket = new CourseMarket();
+        BeanUtils.copyProperties(updateCourseDto, courseMarket);
+        // courseBase.setId();
+        boolean updateSuccess = courseMarketService.updateById(courseMarket);
+        if (!updateSuccess) {
+            throw new XczxException("课程营销信息更新失败");
+        }
+
+        // 查询更新之后的课程信息
+        return selectCourseBaseInfoById(updateCourseDto.getId());
     }
 }

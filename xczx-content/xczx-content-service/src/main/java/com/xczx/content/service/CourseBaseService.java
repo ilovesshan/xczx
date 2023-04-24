@@ -4,6 +4,7 @@ import com.xczx.base.model.dto.PageParams;
 import com.xczx.base.model.vo.PageResult;
 import com.xczx.content.model.dto.AddCourseDto;
 import com.xczx.content.model.dto.QueryCourseParamsDto;
+import com.xczx.content.model.dto.UpdateCourseDto;
 import com.xczx.content.model.po.CourseBase;
 import com.xczx.content.model.vo.CourseBaseInfo;
 
@@ -19,4 +20,8 @@ public interface CourseBaseService {
     PageResult<CourseBase> selectByConditionWithPage(PageParams pageParams, QueryCourseParamsDto dto);
 
     CourseBaseInfo createBaseCourse(Long companyId, AddCourseDto addCourseDto);
+
+    CourseBaseInfo selectCourseBaseInfoById(Long courseId);
+
+    CourseBaseInfo updateBaseCourse(Long companyId, UpdateCourseDto updateCourseDto);
 }
