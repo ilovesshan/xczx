@@ -20,7 +20,8 @@
         where
             tp.course_id = #{courseId}
         order by
-            tp.id
+            tp.parentid,
+            tp.orderby
     </select>
 
 
