@@ -22,4 +22,29 @@
         order by
             tp.id
     </select>
+
+
+    <select id="selectPrevTeachPlanById" resultType="com.xczx.content.model.po.Teachplan">
+        select
+            *
+        from
+            teachplan
+        where
+            parentid = #{parentId} and orderby &lt; #{orderBy}
+        order by
+            orderby desc
+        limit 1
+    </select>
+
+    <select id="selectNextTeachPlanById" resultType="com.xczx.content.model.po.Teachplan">
+        select
+            *
+        from
+            teachplan
+        where
+            parentid = #{parentId} and orderby &gt; #{orderBy}
+        order by
+            orderby asc
+        limit 1
+    </select>
 </mapper>

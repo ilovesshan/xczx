@@ -22,4 +22,6 @@ public interface TeachPlanService extends IService<Teachplan> {
     void insertOrUpdateCoursePlan(InsertOrUpdateCoursePlanDto insertOrUpdateCoursePlanDto);
 
     void deleteCoursePlan(String planId);
+
+    void moveCoursePlan(String moveType, String planId);
 }

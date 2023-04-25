@@ -3,6 +3,7 @@ package com.xczx.content.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.xczx.content.model.po.Teachplan;
 import com.xczx.content.model.vo.TeachPlanBaseInfoVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -16,4 +17,8 @@ import java.util.List;
 public interface TeachPlanMapper extends BaseMapper<Teachplan> {
 
     List<TeachPlanBaseInfoVo> selectPlanById(String courseId);
+
+    Teachplan selectPrevTeachPlanById(@Param("orderBy") Integer orderBy, @Param("parentId") Long parentId);
+
+    Teachplan selectNextTeachPlanById(@Param("orderBy") Integer orderBy, @Param("parentId") Long parentId);
 }

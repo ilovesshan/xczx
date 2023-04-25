@@ -38,8 +38,14 @@ public class TeachPlanController {
     }
 
     @ApiOperation("删除课程计划")
-    @DeleteMapping("//teachplan/{planId}")
+    @DeleteMapping("/teachplan/{planId}")
     public void deleteCoursePlan(@PathVariable("planId") String planId) {
         teachPlanService.deleteCoursePlan(planId);
+    }
+
+    @ApiOperation("移动课程计划")
+    @PostMapping("/teachplan/{moveType}/{planId}")
+    public void moveCoursePlan(@PathVariable("moveType") String moveType, @PathVariable("planId") String planId) {
+        teachPlanService.moveCoursePlan(moveType, planId);
     }
 }

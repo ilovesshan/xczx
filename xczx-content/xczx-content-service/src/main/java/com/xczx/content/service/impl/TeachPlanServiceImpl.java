@@ -14,6 +14,7 @@ import com.xczx.content.service.TeachPlanService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -118,6 +119,40 @@ public class TeachPlanServiceImpl extends ServiceImpl<TeachPlanMapper, Teachplan
             LambdaQueryWrapper<TeachplanMedia> queryWrapper = new LambdaQueryWrapper<>();
             queryWrapper.eq(TeachplanMedia::getTeachplanId, selectedTeachPlan.getId());
             teachPlanMediaService.remove(queryWrapper);
+        }
+    }
+
+
+    @Override
+    @Transactional
+    public void moveCoursePlan(String moveType, String planId) {
+        Teachplan currentTeachPlan = teachPlanMapper.selectById(planId);
+        Teachplan targetTeachPlan = null;
+
+        if ("moveup".equals(moveType)) {
+            // 向上移动
+            targetTeachPlan = teachPlanMapper.selectPrevTeachPlanById(currentTeachPlan.getOrderby(), currentTeachPlan.getParentid());
+            if (targetTeachPlan == null) {
+                throw new XczxException("该计划处于最顶层，无法移动");
+            }
+        } else if ("movedown".equals(moveType)) {
+            // 向下移动
+            targetTeachPlan = teachPlanMapper.selectNextTeachPlanById(currentTeachPlan.getOrderby(), currentTeachPlan.getParentid());
+            if (targetTeachPlan == null) {
+                throw new XczxException("该计划处于最底层，无法移动");
+            }
+        }
+
+        // 更新内存数据
+        int temp = currentTeachPlan.getOrderby();
+        currentTeachPlan.setOrderby(targetTeachPlan.getOrderby());
+        targetTeachPlan.setOrderby(temp);
+
+        // 更新数据库数据
+        int affectRows = teachPlanMapper.updateById(currentTeachPlan);
+        affectRows += teachPlanMapper.updateById(targetTeachPlan);
+        if (affectRows != 2) {
+            throw new XczxException("移动失败，请稍后再试");
         }
     }
 
