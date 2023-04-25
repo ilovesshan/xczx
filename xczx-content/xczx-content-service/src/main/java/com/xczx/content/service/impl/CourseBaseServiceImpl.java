@@ -22,6 +22,7 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Created with IntelliJ IDEA.
@@ -58,12 +59,7 @@ public class CourseBaseServiceImpl implements CourseBaseService {
         Page<CourseBase> courseBasePage = courseBaseMapper.selectPage(page, queryWrapper);
 
         // 封装结果
-        return new PageResult<>(
-                pageParams.getPageNo(),
-                pageParams.getPageSize(),
-                courseBasePage.getTotal(),
-                courseBasePage.getRecords()
-        );
+        return new PageResult<>(pageParams.getPageNo(), pageParams.getPageSize(), courseBasePage.getTotal(), courseBasePage.getRecords());
     }
 
     @Override
@@ -145,5 +141,21 @@ public class CourseBaseServiceImpl implements CourseBaseService {
 
         // 查询更新之后的课程信息
         return selectCourseBaseInfoById(updateCourseDto.getId());
+    }
+
+
+    @Override
+    public void deleteBaseCourse(Long companyId, String courseId) {
+        CourseBase courseBase = courseBaseMapper.selectById(courseId);
+        if (!Objects.equals(courseBase.getCompanyId(), companyId)) {
+            throw new XczxException("只能删除本机构课程信息");
+        }
+        if (!"202002".equals(courseBase.getAuditStatus())) {
+            throw new XczxException("只能删除未提交的课程");
+        }
+        int affectRows = courseBaseMapper.deleteById(courseId);
+        if (affectRows <= 0) {
+            throw new XczxException("删除失败");
+        }
     }
 }

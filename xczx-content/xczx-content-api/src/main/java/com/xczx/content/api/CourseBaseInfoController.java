@@ -53,4 +53,10 @@ public class CourseBaseInfoController {
     public CourseBaseInfo updateBaseCourse(@Validated @RequestBody UpdateCourseDto updateCourseDto) {
         return courseBaseService.updateBaseCourse(1001101L, updateCourseDto);
     }
+
+    @ApiOperation("删除课程基础信息")
+    @DeleteMapping("/course/{courseId}")
+    public void deleteBaseCourse(@PathVariable("courseId") String courseId) {
+        courseBaseService.deleteBaseCourse(1001101L,courseId);
+    }
 }
