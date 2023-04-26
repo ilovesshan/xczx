@@ -65,12 +65,6 @@
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
 
-        <!-- swagger -->
-        <dependency>
-            <groupId>com.spring4all</groupId>
-            <artifactId>swagger-spring-boot-starter</artifactId>
-        </dependency>
-
     </dependencies>
 
 </project>

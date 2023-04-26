@@ -11,6 +11,7 @@
         <module>../xczx-content</module>
         <module>../xczx-system</module>
         <module>../xczx-gateway</module>
+        <module>../xczx-media</module>
     </modules>
     <packaging>pom</packaging>
 
