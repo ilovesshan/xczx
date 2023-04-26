@@ -1,6 +1,7 @@
 spring:
   application:
     name: system-api
+
   cloud:
     nacos:
       server-addr: 192.168.1.131:8848
@@ -26,6 +27,7 @@ spring:
           - data-id: mybatis-plus-${spring.profiles.active}.yaml
             group: xczx_plus_commom
             refresh: true
+
   profiles:
     active: dev
 

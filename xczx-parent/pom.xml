@@ -10,6 +10,7 @@
     <modules>
         <module>../xczx-content</module>
         <module>../xczx-system</module>
+        <module>../xczx-gateway</module>
     </modules>
     <packaging>pom</packaging>
 
