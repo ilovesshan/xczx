@@ -1,31 +1,35 @@
-server:
-  servlet:
-    context-path: /content
-  port: 63040
-
-#微服务配置
+#服务配置
 spring:
   application:
     name: content-api
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://192.168.1.131:3306/xc_001_content?serverTimezone=UTC&userUnicode=true&useSSL=false&
-    username: root
-    password: mysql
+  cloud:
+    # nacos 相关信息配置
+    nacos:
+      server-addr: 192.168.1.131:8848
+      discovery:
+        namespace: xczx_dev
+        group: xczx_plus_project
+      config:
+        namespace: xczx_dev
+        group: xczx_plus_project
+        file-extension: yaml
+        refresh-enabled: true
 
+        # 引用继承配置文件
+        extension-configs:
+          - data-id: content-service-${spring.profiles.active}.yaml
+            group: xczx_plus_project
+            refresh: true
 
-swagger:
-  title: "学成在线内容管理系统"
-  description: "内容系统管理系统对课程相关信息进行管理"
-  base-package: com.xczx.content
-  enabled: true
-  version: 1.0.0
+        # 引用公共配置文件
+        shared-configs:
+          - data-id: swagger-${spring.profiles.active}.yaml
+            group: xczx_plus_commom
+            refresh: true
 
-# 日志文件配置路径
-#logging:
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-    map-underscore-to-camel-case: true
+          - data-id: mybatis-plus-${spring.profiles.active}.yaml
+            group: xczx_plus_commom
+            refresh: true
 
-#  config: classpath:log4j2-dev.xml
+  profiles:
+    active: dev
