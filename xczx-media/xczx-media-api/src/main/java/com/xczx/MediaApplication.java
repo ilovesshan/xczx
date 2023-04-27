@@ -1,4 +1,4 @@
-package com.xczx.media;
+package com.xczx;
 
 
 import com.spring4all.swagger.EnableSwagger2Doc;

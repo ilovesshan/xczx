@@ -3,6 +3,7 @@ package com.xczx.media.service;
 
 import com.xczx.base.model.dto.PageParams;
 import com.xczx.base.model.vo.PageResult;
+import com.xczx.media.model.dto.FileUploadDto;
 import com.xczx.media.model.dto.QueryMediaParamsDto;
 import com.xczx.media.model.po.MediaFiles;
 
@@ -24,4 +25,5 @@ public interface MediaFileService {
  */
   PageResult<MediaFiles> queryMediaFiels(Long companyId, PageParams pageParams, QueryMediaParamsDto queryMediaParamsDto);
 
+    MediaFiles upload(Long companyId, String localFilePath, FileUploadDto fileUploadDto);
 }
