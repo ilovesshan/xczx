@@ -12,13 +12,5 @@ spring:
   profiles:
     active: dev
 
-minio:
-  endpoint: http://192.168.101.65:9000
-  accessKey: minioadmin
-  secretKey: minioadmin
-  bucket:
-    files: mediafiles
-    videofiles: video
-
 
 

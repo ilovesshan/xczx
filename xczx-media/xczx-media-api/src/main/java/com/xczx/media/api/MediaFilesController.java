@@ -46,7 +46,6 @@ public class MediaFilesController {
         multipartFile.transferTo(tempFile);
         String localFilePath = tempFile.getAbsolutePath();
 
-
         FileUploadDto fileUploadDto = new FileUploadDto();
         fileUploadDto.setFileSize(multipartFile.getSize());
         fileUploadDto.setFilename(multipartFile.getOriginalFilename());
