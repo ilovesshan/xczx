@@ -16,7 +16,22 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, file_id, filename, bucket, status, create_date, finish_date, url
+        id, file_id, file_path, filename, bucket, status, create_date, finish_date, url
     </sql>
+
+    <update id="startMediaProcess">
+        update media_process set `status` = 4 where id = #{id} and (`status` =1 or `status` = 3) and fail_count &lt; 3;
+    </update>
+
+    <select id="selectMediaProcess" resultType="com.xczx.media.model.po.MediaProcess">
+        select
+            <include refid="Base_Column_List" />
+        from
+            media_process
+        where
+            (`id` % #{processCount} = #{processIndex}) and (`status` = 1 or `status` = 3) and fail_count &lt; 3
+        limit
+            #{taskCount}
+    </select>
 
 </mapper>

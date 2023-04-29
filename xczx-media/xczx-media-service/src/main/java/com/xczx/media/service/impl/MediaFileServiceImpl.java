@@ -2,6 +2,7 @@ package com.xczx.media.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.j256.simplemagic.ContentInfo;
 import com.j256.simplemagic.ContentInfoUtil;
 import com.xczx.base.exception.XczxException;
@@ -12,7 +13,9 @@ import com.xczx.media.mapper.MediaFilesMapper;
 import com.xczx.media.model.dto.FileUploadDto;
 import com.xczx.media.model.dto.QueryMediaParamsDto;
 import com.xczx.media.model.po.MediaFiles;
+import com.xczx.media.model.po.MediaProcess;
 import com.xczx.media.service.MediaFileService;
+import com.xczx.media.service.MediaProcessService;
 import io.minio.*;
 import io.minio.messages.DeleteError;
 import io.minio.messages.DeleteObject;
@@ -23,6 +26,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -43,13 +47,19 @@ import java.util.stream.Stream;
 
 @Slf4j
 @Service
-public class MediaFileServiceImpl implements MediaFileService {
+public class MediaFileServiceImpl extends ServiceImpl<MediaFilesMapper, MediaFiles> implements MediaFileService {
 
     @Resource
     private MediaFilesMapper mediaFilesMapper;
 
     @Resource
     private MinioClient minioClient;
+
+    @Resource
+    private MediaFileService mediaFileServiceProxy;
+
+    @Resource
+    private MediaProcessService mediaProcessService;
 
 
     @Value("${minio.bucket.files}")
@@ -221,8 +231,9 @@ public class MediaFileServiceImpl implements MediaFileService {
             }
         }
 
-        //文件入库
-        addMediaFilesToDb(companyId, fileMd5, fileUploadDto, videofiles, mergeFilePath);
+        // 文件入库
+        mediaFileServiceProxy.addMediaFilesToDb(companyId, fileMd5, fileUploadDto, videofiles, mergeFilePath);
+
         //=====清除分块文件=====
         clearChunkFiles(chunkFileFolderPath, chunkTotal);
         return RestResponse.success(true);
@@ -305,7 +316,7 @@ public class MediaFileServiceImpl implements MediaFileService {
      * @param contentType    文件类型
      * @return 是否上传成功
      */
-    private boolean uploadFileToMinio(String buket, String targetFileName, String localFileName, String contentType) {
+    public boolean uploadFileToMinio(String buket, String targetFileName, String localFileName, String contentType) {
         try {
             UploadObjectArgs uploadObjectArgs = UploadObjectArgs.builder().bucket(buket).object(targetFileName).filename(localFileName).contentType(contentType).build();
             minioClient.uploadObject(uploadObjectArgs);
@@ -373,6 +384,7 @@ public class MediaFileServiceImpl implements MediaFileService {
      * @param objectName    Minio服务器中文件地址
      * @return MediaFiles
      */
+    @Transactional
     public MediaFiles addMediaFilesToDb(Long companyId, String fileMd5, FileUploadDto fileuploadDto, String bucket, String objectName) {
         //从数据库查询文件
         MediaFiles mediaFiles = mediaFilesMapper.selectById(fileMd5);
@@ -396,8 +408,28 @@ public class MediaFileServiceImpl implements MediaFileService {
                 throw new XczxException("保存文件信息失败");
             }
             log.debug("保存文件信息到数据库成功,{}", mediaFiles);
+
+            // 保存当前视频对应的入库信息到任务待处理表中(media_process)
+            saveTaskToMediaProcess(mediaFiles);
+
         }
         return mediaFiles;
+    }
+
+    public void saveTaskToMediaProcess(MediaFiles mediaFiles) {
+        String ext = mediaFiles.getFilename().substring(mediaFiles.getFilename().lastIndexOf("."));
+        if ("video/x-msvideo".equals(getMimeType(ext)) || "video/avi".equals(getMimeType(ext))) {
+            MediaProcess mediaProcess = new MediaProcess();
+            BeanUtils.copyProperties(mediaFiles, mediaProcess);
+            mediaProcess.setStatus("1"); // 1待处理、2处理完成、3处理失败
+            mediaProcess.setCreateDate(LocalDateTime.now());
+            mediaProcess.setUrl(null);
+            if (!mediaProcessService.save(mediaProcess)) {
+                log.error("视频任务入库失败,{}", mediaFiles);
+                throw new XczxException("视频任务入库失败");
+            }
+            log.debug("视频任务入库成功,{}", mediaFiles);
+        }
     }
 
     /**

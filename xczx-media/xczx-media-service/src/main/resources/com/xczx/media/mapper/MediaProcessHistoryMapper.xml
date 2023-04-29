@@ -19,4 +19,13 @@
         id, file_id, filename, bucket, status, create_date, finish_date, url
     </sql>
 
+
+    <insert id="insertById">
+        INSERT INTO
+            `xc_001_media`.`media_process_history`
+                (`id`, `file_id`, `filename`, `bucket`, `status`, `create_date`, `finish_date`, `url`, `file_path`, `errormsg`, `failCount`)
+        VALUES
+            (#{media.id}, #{media.fileId}, #{media.filename}, #{media.bucket}, #{media.status}, #{media.createDate}, #{media.finishDate}, #{media.url}, #{media.filePath}, #{media.errormsg}, #{media.failCount);
+    </insert>
+
 </mapper>
