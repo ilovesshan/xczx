@@ -98,7 +98,6 @@ public class MediaProcessServiceImpl extends ServiceImpl<MediaProcessMapper, Med
 //            mediaProcessMapper.updateById(mediaProcess);
 //            //更高效的更新方式
 ////            mediaProcessMapper.update()
-//            //todo:将上边的更新方式更改为效的更新方式
 //            return;
 //
 //        }
