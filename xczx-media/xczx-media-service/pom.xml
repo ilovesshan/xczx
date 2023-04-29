@@ -34,9 +34,17 @@
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
         </dependency>
 
+
+        <!-- 分布式 文件管理系统-->
         <dependency>
             <groupId>io.minio</groupId>
             <artifactId>minio</artifactId>
+        </dependency>
+
+        <!-- 分布式 任务调度-->
+        <dependency>
+            <groupId>com.xuxueli</groupId>
+            <artifactId>xxl-job-core</artifactId>
         </dependency>
 
         <!-- MySQL 驱动 -->
