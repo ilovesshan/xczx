@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xczx.base.exception.XczxException;
 import com.xczx.content.mapper.TeachPlanMapper;
+import com.xczx.content.model.dto.BindingCourseMediaDto;
 import com.xczx.content.model.dto.InsertOrUpdateCoursePlanDto;
 import com.xczx.content.model.po.Teachplan;
 import com.xczx.content.model.po.TeachplanMedia;
@@ -156,10 +157,29 @@ public class TeachPlanServiceImpl extends ServiceImpl<TeachPlanMapper, Teachplan
         }
     }
 
+
     private void deleteCourseById(String planId) {
         int affectRows = teachPlanMapper.deleteById(planId);
         if (affectRows <= 0) {
             throw new XczxException("课程计划信息删除失败");
         }
+    }
+
+
+    @Override
+    @Transactional
+    public void bindingCourseMedia(BindingCourseMediaDto bindingCourseMediaDto) {
+        // 先删除之前的关联的媒资信息
+        long teachplanId = bindingCourseMediaDto.getTeachplanId();
+        teachPlanMediaService.remove(new LambdaQueryWrapper<TeachplanMedia>().eq(TeachplanMedia::getTeachplanId, teachplanId));
+
+        // 绑定最新的媒资信息
+        Teachplan teachplan = teachPlanMapper.selectById(teachplanId);
+        TeachplanMedia teachplanMedia = new TeachplanMedia();
+        teachplanMedia.setMediaId(bindingCourseMediaDto.getMediaId());
+        teachplanMedia.setTeachplanId(teachplanId);
+        teachplanMedia.setCourseId(teachplan.getCourseId());
+        teachplanMedia.setMediaFilename(bindingCourseMediaDto.getFileName());
+        teachPlanMediaService.save(teachplanMedia);
     }
 }

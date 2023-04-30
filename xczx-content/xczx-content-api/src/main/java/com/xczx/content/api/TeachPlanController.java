@@ -1,5 +1,6 @@
 package com.xczx.content.api;
 
+import com.xczx.content.model.dto.BindingCourseMediaDto;
 import com.xczx.content.model.dto.InsertOrUpdateCoursePlanDto;
 import com.xczx.content.model.vo.TeachPlanBaseInfoVo;
 import com.xczx.content.service.TeachPlanService;
@@ -47,5 +48,11 @@ public class TeachPlanController {
     @PostMapping("/teachplan/{moveType}/{planId}")
     public void moveCoursePlan(@PathVariable("moveType") String moveType, @PathVariable("planId") String planId) {
         teachPlanService.moveCoursePlan(moveType, planId);
+    }
+
+    @ApiOperation("绑定媒资和课程计划")
+    @PostMapping("/teachplan/association/media")
+    public void bindingCourseMedia(@RequestBody BindingCourseMediaDto bindingCourseMediaDto) {
+        teachPlanService.bindingCourseMedia(bindingCourseMediaDto);
     }
 }

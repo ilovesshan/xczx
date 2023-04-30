@@ -1,6 +1,7 @@
 package com.xczx.content.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.xczx.content.model.dto.BindingCourseMediaDto;
 import com.xczx.content.model.dto.InsertOrUpdateCoursePlanDto;
 import com.xczx.content.model.po.Teachplan;
 import com.xczx.content.model.vo.TeachPlanBaseInfoVo;
@@ -24,4 +25,7 @@ public interface TeachPlanService extends IService<Teachplan> {
     void deleteCoursePlan(String planId);
 
     void moveCoursePlan(String moveType, String planId);
+
+    void bindingCourseMedia(BindingCourseMediaDto bindingCourseMediaDto);
+
 }
