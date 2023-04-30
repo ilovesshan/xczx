@@ -31,5 +31,9 @@ spring:
             group: xczx_plus_commom
             refresh: true
 
+          - data-id: freemarker-config-${spring.profiles.active}.yaml
+            group: xczx_plus_common
+            refresh: true
+
   profiles:
     active: dev
