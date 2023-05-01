@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @EnableSwagger2Doc
 @SpringBootApplication
 @MapperScan("com.xczx.content.mapper")
+@MapperScan("com.xczx.messagesdk.mapper")
 public class ContentApplication {
     public static void main(String[] args) {
         SpringApplication.run(ContentApplication.class, args);

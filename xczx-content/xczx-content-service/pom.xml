@@ -20,6 +20,12 @@
             <version>1.0.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.xczx</groupId>
+            <artifactId>xczx-message-sdk</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
         <!-- nacos 配置拉取-->
         <dependency>
             <groupId>com.alibaba.cloud</groupId>

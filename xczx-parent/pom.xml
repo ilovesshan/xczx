@@ -12,6 +12,7 @@
         <module>../xczx-system</module>
         <module>../xczx-gateway</module>
         <module>../xczx-media</module>
+        <module>../xczx-message-sdk</module>
     </modules>
     <packaging>pom</packaging>
 

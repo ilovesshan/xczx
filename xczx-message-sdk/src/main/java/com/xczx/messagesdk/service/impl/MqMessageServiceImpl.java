@@ -9,10 +9,10 @@ import com.xczx.messagesdk.model.po.MqMessageHistory;
 import com.xczx.messagesdk.service.MqMessageService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -26,10 +26,10 @@ import java.util.List;
 @Service
 public class MqMessageServiceImpl extends ServiceImpl<MqMessageMapper, MqMessage> implements MqMessageService {
 
-    @Autowired
+    @Resource
     MqMessageMapper mqMessageMapper;
 
-    @Autowired
+    @Resource
     MqMessageHistoryMapper mqMessageHistoryMapper;
 
 
