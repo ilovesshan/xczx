@@ -16,6 +16,7 @@
         <module>../xczx-search</module>
         <module>../xczx-auth</module>
         <module>../xczx-checkcode</module>
+        <module>../xczx-openfign</module>
     </modules>
     <packaging>pom</packaging>
 
