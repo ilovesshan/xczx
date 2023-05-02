@@ -8,9 +8,9 @@ import com.xczx.content.model.dto.UpdateCourseDto;
 import com.xczx.content.model.po.CourseBase;
 import com.xczx.content.model.vo.CourseBaseInfo;
 import com.xczx.content.service.CourseBaseService;
+import com.xczx.coonfig.SecurityUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,7 +46,7 @@ public class CourseBaseInfoController {
     @ApiOperation("课程详情查询")
     @GetMapping("/course/{id}")
     public CourseBaseInfo selectById(@PathVariable("id") Long id) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SecurityUtil.XcUser user = SecurityUtil.getUser();
         return courseBaseService.selectCourseBaseInfoById(id);
     }
 
