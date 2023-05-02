@@ -5,13 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 
-/**
- * <p>
- * 
- * </p>
- *
- * @author itcast
- */
+
 @Data
 @TableName("xc_teacher")
 public class XcTeacher implements Serializable {

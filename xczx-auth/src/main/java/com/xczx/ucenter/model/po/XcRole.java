@@ -6,13 +6,6 @@ import lombok.Data;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
-/**
- * <p>
- * 
- * </p>
- *
- * @author itcast
- */
 @Data
 @TableName("xc_role")
 public class XcRole implements Serializable {
