@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: search
+
+  cloud:
+    nacos:
+      server-addr: 192.168.1.131:8848
+      discovery:
+        namespace: xczx_dev
+        group: xczx_plus_project
+
+      config:
+        namespace: xczx_dev
+        group: xczx_plus_project
+        file-extension: yaml
+        refresh-enabled: true
+
+        shared-configs:
+          - data-id: swagger-${spring.profiles.active}.yaml
+            group: xczx_plus_commom
+            refresh: true
+
+  profiles:
+    active: dev
+
+#server:
+#  servlet:
+#    context-path: /search
+#  port: 63080
+#
+#elasticsearch:
+#  hostlist:
+#    - 192.168.1.131
+#  course:
+#    index: course-publish
+#    source_fields: id,name,grade,mt,st,charge,pic,price,originalOrice,teachmode,validDays,createDate
+
