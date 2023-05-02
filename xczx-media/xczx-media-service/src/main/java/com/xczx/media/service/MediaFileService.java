@@ -30,7 +30,7 @@ public interface MediaFileService extends IService<MediaFiles> {
      */
     PageResult<MediaFiles> queryMediaFiels(Long companyId, PageParams pageParams, QueryMediaParamsDto queryMediaParamsDto);
 
-    MediaFiles upload(Long companyId, String localFilePath, FileUploadDto fileUploadDto);
+    MediaFiles upload(Long companyId, String localFilePath, FileUploadDto fileUploadDto, String objectName);
 
     RestResponse<Boolean> checkFile(String fileMd5);
 

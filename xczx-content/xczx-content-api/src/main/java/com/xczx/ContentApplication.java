@@ -4,6 +4,7 @@ import com.spring4all.swagger.EnableSwagger2Doc;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 /**
  * Created with IntelliJ IDEA.
@@ -13,10 +14,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @description:
  */
 
-@EnableSwagger2Doc
-@SpringBootApplication
 @MapperScan("com.xczx.content.mapper")
 @MapperScan("com.xczx.messagesdk.mapper")
+@EnableSwagger2Doc
+@SpringBootApplication
+@EnableFeignClients(basePackages = "com.xczx.content.client")
 public class ContentApplication {
     public static void main(String[] args) {
         SpringApplication.run(ContentApplication.class, args);

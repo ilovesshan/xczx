@@ -13,6 +13,7 @@
         <module>../xczx-gateway</module>
         <module>../xczx-media</module>
         <module>../xczx-message-sdk</module>
+        <module>../xczx-search</module>
     </modules>
     <packaging>pom</packaging>
 

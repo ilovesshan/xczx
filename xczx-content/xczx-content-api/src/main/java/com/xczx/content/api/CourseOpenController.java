@@ -1,7 +1,7 @@
 package com.xczx.content.api;
 
 import com.xczx.content.model.vo.CoursePreviewVo;
-import com.xczx.content.service.CoursePublishService;
+import com.xczx.content.service.CoursePublishPreService;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,11 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class CourseOpenController {
 
     @Autowired
-    private CoursePublishService coursePublishService;
+    private CoursePublishPreService coursePublishPreService;
 
     @GetMapping("/course/whole/{courseId}")
     public CoursePreviewVo getPreviewInfo(@PathVariable("courseId") String courseId) {
         //获取课程预览信息
-        return coursePublishService.getCoursePreviewInfo(courseId);
+        return coursePublishPreService.getCoursePreviewInfo(courseId);
     }
 }

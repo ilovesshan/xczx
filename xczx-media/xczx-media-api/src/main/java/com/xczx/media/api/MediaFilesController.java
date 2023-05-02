@@ -38,9 +38,9 @@ public class MediaFilesController {
         return mediaFileService.queryMediaFiels(companyId, pageParams, queryMediaParamsDto);
     }
 
-    @ApiOperation("上传图片接口")
-    @PostMapping("/upload/coursefile")
-    public MediaFiles upload(@RequestParam("filedata") MultipartFile multipartFile) throws IOException {
+    @ApiOperation("上传图片/静态文件接口")
+    @PostMapping(value = "/upload/coursefile")
+    public MediaFiles upload(@RequestParam("filedata") MultipartFile multipartFile, @RequestParam(value = "objectName", required = false) String objectName) throws IOException {
         Long companyId = 1001101L;
         File tempFile = File.createTempFile("minio", "temp");
         multipartFile.transferTo(tempFile);
@@ -52,6 +52,6 @@ public class MediaFilesController {
         fileUploadDto.setFileType("001001");
 
 
-       return mediaFileService.upload(companyId,localFilePath,fileUploadDto);
+        return mediaFileService.upload(companyId, localFilePath, fileUploadDto, objectName);
     }
 }

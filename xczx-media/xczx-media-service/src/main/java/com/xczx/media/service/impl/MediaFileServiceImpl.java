@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -88,13 +89,18 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFilesMapper, MediaFil
 
 
     @Override
-    public MediaFiles upload(Long companyId, String localFilePath, FileUploadDto fileUploadDto) {
+    public MediaFiles upload(Long companyId, String localFilePath, FileUploadDto fileUploadDto, String objectName) {
         // 文件扩展名
         String extName = fileUploadDto.getFilename().substring(fileUploadDto.getFilename().lastIndexOf("."));
         // 文件MD5值
         String fileMd5 = getFileMd5(new File(localFilePath));
         // 最终文件路径+文件名称
-        String finalFilepath = getDefaultFolderPath() + fileMd5 + extName;
+        String finalFilepath = "";
+        if (StringUtils.isEmpty(objectName)) {
+            finalFilepath = getDefaultFolderPath() + fileMd5 + extName;
+        } else {
+            finalFilepath = objectName;
+        }
         // 将文件上传到MinIO服务器上
         boolean uploadFileToMinioSuccess = uploadFileToMinio(files, finalFilepath, localFilePath, getMimeType(extName));
         if (!uploadFileToMinioSuccess) {
@@ -111,10 +117,7 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFilesMapper, MediaFil
         MediaFiles mediaFiles = mediaFilesMapper.selectById(fileMd5);
         if (mediaFiles != null) {
             // 从Minio中查
-            GetObjectArgs getObjectArgs = GetObjectArgs.builder()
-                    .bucket(mediaFiles.getBucket())
-                    .object(mediaFiles.getFilePath())
-                    .build();
+            GetObjectArgs getObjectArgs = GetObjectArgs.builder().bucket(mediaFiles.getBucket()).object(mediaFiles.getFilePath()).build();
             try {
                 FilterInputStream inputStream = minioClient.getObject(getObjectArgs);
                 if (inputStream != null) {
@@ -132,10 +135,7 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFilesMapper, MediaFil
     public RestResponse<Boolean> checkChunk(String fileMd5, int chunk) {
         // 从Minio中查询当前分块文件是否存在
         String fileFolderPath = getChunkFileFolderPath(fileMd5);
-        GetObjectArgs getObjectArgs = GetObjectArgs.builder()
-                .bucket(videofiles)
-                .object(fileFolderPath + chunk)
-                .build();
+        GetObjectArgs getObjectArgs = GetObjectArgs.builder().bucket(videofiles).object(fileFolderPath + chunk).build();
         try {
             FilterInputStream inputStream = minioClient.getObject(getObjectArgs);
             if (inputStream != null) {
@@ -156,12 +156,7 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFilesMapper, MediaFil
             File tempFile = File.createTempFile("minio", "temp");
             file.transferTo(tempFile);
             String localFilePath = tempFile.getAbsolutePath();
-            boolean uploadFileToMinio = uploadFileToMinio(
-                    videofiles,
-                    getChunkFileFolderPath(fileMd5) + chunk,
-                    localFilePath,
-                    getMimeType(null)
-            );
+            boolean uploadFileToMinio = uploadFileToMinio(videofiles, getChunkFileFolderPath(fileMd5) + chunk, localFilePath, getMimeType(null));
             if (uploadFileToMinio) {
                 return RestResponse.success(true);
             }
@@ -177,13 +172,7 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFilesMapper, MediaFil
         //=====获取分块文件路径=====
         String chunkFileFolderPath = getChunkFileFolderPath(fileMd5);
         //组成将分块文件路径组成 List<ComposeSource>
-        List<ComposeSource> sourceObjectList = Stream.iterate(0, i -> ++i)
-                .limit(chunkTotal)
-                .map(i -> ComposeSource.builder()
-                        .bucket(videofiles)
-                        .object(chunkFileFolderPath.concat(Integer.toString(i)))
-                        .build())
-                .collect(Collectors.toList());
+        List<ComposeSource> sourceObjectList = Stream.iterate(0, i -> ++i).limit(chunkTotal).map(i -> ComposeSource.builder().bucket(videofiles).object(chunkFileFolderPath.concat(Integer.toString(i))).build()).collect(Collectors.toList());
         //=====合并=====
         //文件名称
         String fileName = fileUploadDto.getFilename();
@@ -193,12 +182,7 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFilesMapper, MediaFil
         String mergeFilePath = getFilePathByMd5(fileMd5, extName);
         try {
             //合并文件
-            ObjectWriteResponse response = minioClient.composeObject(
-                    ComposeObjectArgs.builder()
-                            .bucket(videofiles)
-                            .object(mergeFilePath)
-                            .sources(sourceObjectList)
-                            .build());
+            ObjectWriteResponse response = minioClient.composeObject(ComposeObjectArgs.builder().bucket(videofiles).object(mergeFilePath).sources(sourceObjectList).build());
             log.debug("合并文件成功:{}", mergeFilePath);
         } catch (Exception e) {
             log.debug("合并文件失败,fileMd5:{},异常:{}", fileMd5, e.getMessage(), e);
@@ -248,10 +232,7 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFilesMapper, MediaFil
     private void clearChunkFiles(String chunkFileFolderPath, int chunkTotal) {
 
         try {
-            List<DeleteObject> deleteObjects = Stream.iterate(0, i -> ++i)
-                    .limit(chunkTotal)
-                    .map(i -> new DeleteObject(chunkFileFolderPath.concat(Integer.toString(i))))
-                    .collect(Collectors.toList());
+            List<DeleteObject> deleteObjects = Stream.iterate(0, i -> ++i).limit(chunkTotal).map(i -> new DeleteObject(chunkFileFolderPath.concat(Integer.toString(i)))).collect(Collectors.toList());
 
             RemoveObjectsArgs removeObjectsArgs = RemoveObjectsArgs.builder().bucket("video").objects(deleteObjects).build();
             Iterable<Result<DeleteError>> results = minioClient.removeObjects(removeObjectsArgs);
@@ -283,10 +264,7 @@ public class MediaFileServiceImpl extends ServiceImpl<MediaFilesMapper, MediaFil
         File minioFile = null;
         FileOutputStream outputStream = null;
         try {
-            InputStream stream = minioClient.getObject(GetObjectArgs.builder()
-                    .bucket(bucket)
-                    .object(objectName)
-                    .build());
+            InputStream stream = minioClient.getObject(GetObjectArgs.builder().bucket(bucket).object(objectName).build());
             //创建临时文件
             minioFile = File.createTempFile("minio", ".merge");
             outputStream = new FileOutputStream(minioFile);
