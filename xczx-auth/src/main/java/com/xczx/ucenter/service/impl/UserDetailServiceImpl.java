@@ -1,10 +1,11 @@
 package com.xczx.ucenter.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.xczx.ucenter.mapper.XcUserMapper;
-import com.xczx.ucenter.model.po.XcUser;
+import com.xczx.ucenter.model.dto.AuthParamsDto;
+import com.xczx.ucenter.model.dto.XcUserExt;
+import com.xczx.ucenter.service.AuthService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,32 +26,29 @@ import javax.annotation.Resource;
 public class UserDetailServiceImpl implements UserDetailsService {
 
     @Resource
-    private XcUserMapper xcUserMapper;
+    private ApplicationContext springApplication;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-
-        // 根据用户名去数据库查询数据
-        XcUser queryXcUser = new XcUser();
-        queryXcUser.setUsername(s);
-        XcUser selectedXcUserResult = xcUserMapper.selectOne(new LambdaQueryWrapper<XcUser>(queryXcUser));
-
-        // 如果为空直接返回null即可，SpringSecurity到时候会自己抛出异常
-        if (selectedXcUserResult == null) {
-            return null;
+        AuthParamsDto authParamsDto = null;
+        try {
+            authParamsDto = JSON.parseObject(s, AuthParamsDto.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("认证请求数据格式不对");
         }
 
-        // 获取查询到的用户密码
-        String password = selectedXcUserResult.getPassword();
-        String username = selectedXcUserResult.getUsername();
+        // 根据认证类型来选择对应的认证服务(注意Bean命名规范)
+        String authType = authParamsDto.getAuthType();
+        String beanName = authType + "AuthService";
+        AuthService authService = springApplication.getBean(beanName, AuthService.class);
+        // 调用对应服务处理业务逻辑
+        XcUserExt xcUserExt = authService.execute(authParamsDto);
 
-        // 用户权限,如果不加报Cannot pass a null GrantedAuthority collection 先暂时随便写
         String[] authorities = {"test"};
-
-        // 扩展用户信息类(将查询到的数据转成JSON字符串)
-        String userInfoJson = JSON.toJSONString(selectedXcUserResult);
-
-        // 将查询到的用户的密码封装到UserDetails对象中，由SpringSecurity自己比对密码(暂时这样写，后期由我们自己来编写比对逻辑)
+        String password = xcUserExt.getPassword();
+        xcUserExt.setPassword(null);
+        String userInfoJson = JSON.toJSONString(xcUserExt);
         return User.withUsername(userInfoJson).password(password).authorities(authorities).build();
     }
 }
