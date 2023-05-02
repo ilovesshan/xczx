@@ -38,10 +38,5 @@ spring:
           - data-id: feign-${spring.profiles.active}.yaml
             group: xczx_plus_common
             refresh: true
-
-          - data-id: feign-${spring.profiles.active}.yaml
-            group: xczx_plus_common
-            refresh: true
-
   profiles:
     active: dev
