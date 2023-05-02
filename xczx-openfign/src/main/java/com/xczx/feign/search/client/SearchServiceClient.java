@@ -1,7 +1,7 @@
-package com.xczx.content.client;
+package com.xczx.feign.search.client;
 
-import com.xczx.content.client.fallbackFactory.SearchServiceClientFallbackFactory;
-import com.xczx.content.model.po.CourseIndex;
+import com.xczx.feign.search.model.CourseIndex;
+import com.xczx.feign.search.fallbackFactory.SearchServiceClientFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

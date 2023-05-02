@@ -1,14 +1,14 @@
 package com.xczx.content.service.jobhandler;
 
 import com.xczx.base.exception.XczxException;
-import com.xczx.content.client.MediaFileClient;
-import com.xczx.content.client.SearchServiceClient;
-import com.xczx.content.config.MultipartSupportConfig;
-import com.xczx.content.model.po.CourseIndex;
 import com.xczx.content.model.po.CoursePublish;
 import com.xczx.content.model.vo.CoursePreviewVo;
 import com.xczx.content.service.CoursePublishPreService;
 import com.xczx.content.service.CoursePublishService;
+import com.xczx.feign.config.MultipartSupportConfig;
+import com.xczx.feign.medis.client.MediaFileClient;
+import com.xczx.feign.search.client.SearchServiceClient;
+import com.xczx.feign.search.model.CourseIndex;
 import com.xczx.messagesdk.model.po.MqMessage;
 import com.xczx.messagesdk.service.MessageProcessAbstract;
 import com.xczx.messagesdk.service.MqMessageService;

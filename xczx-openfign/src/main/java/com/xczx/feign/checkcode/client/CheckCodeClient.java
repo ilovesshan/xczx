@@ -1,4 +1,4 @@
-package com.xczx.feign.checkcode;
+package com.xczx.feign.checkcode.client;
 
 import com.xczx.feign.checkcode.fallbackfactory.CheckCodeClientFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;

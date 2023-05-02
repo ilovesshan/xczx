@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @MapperScan("com.xczx.ucenter.mapper")
-@EnableFeignClients(basePackages = "com.xczx.feign.checkcode")
+@EnableFeignClients(basePackages = {"com.xczx.feign"})
 @SpringBootApplication
 public class AuthApplication {
 

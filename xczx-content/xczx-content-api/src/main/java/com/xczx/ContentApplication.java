@@ -17,8 +17,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @MapperScan("com.xczx.content.mapper")
 @MapperScan("com.xczx.messagesdk.mapper")
 @EnableSwagger2Doc
+@EnableFeignClients(basePackages = {"com.xczx.feign"})
 @SpringBootApplication
-@EnableFeignClients(basePackages = "com.xczx.content.client")
 public class ContentApplication {
     public static void main(String[] args) {
         SpringApplication.run(ContentApplication.class, args);

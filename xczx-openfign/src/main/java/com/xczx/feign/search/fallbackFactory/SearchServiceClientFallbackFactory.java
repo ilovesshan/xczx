@@ -1,7 +1,7 @@
-package com.xczx.content.client.fallbackFactory;
+package com.xczx.feign.search.fallbackFactory;
 
-import com.xczx.content.client.SearchServiceClient;
-import com.xczx.content.model.po.CourseIndex;
+import com.xczx.feign.search.model.CourseIndex;
+import com.xczx.feign.search.client.SearchServiceClient;
 import feign.hystrix.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

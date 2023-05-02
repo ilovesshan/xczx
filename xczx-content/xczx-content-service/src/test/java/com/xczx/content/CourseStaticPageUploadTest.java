@@ -1,8 +1,8 @@
 
 package com.xczx.content;
 
-import com.xczx.content.client.MediaFileClient;
-import com.xczx.content.config.MultipartSupportConfig;
+import com.xczx.feign.config.MultipartSupportConfig;
+import com.xczx.feign.medis.client.MediaFileClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.multipart.MultipartFile;

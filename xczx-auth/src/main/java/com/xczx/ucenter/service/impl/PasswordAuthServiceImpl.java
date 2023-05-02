@@ -1,7 +1,7 @@
 package com.xczx.ucenter.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.xczx.feign.checkcode.CheckCodeClient;
+import com.xczx.feign.checkcode.client.CheckCodeClient;
 import com.xczx.ucenter.mapper.XcUserMapper;
 import com.xczx.ucenter.model.dto.AuthParamsDto;
 import com.xczx.ucenter.model.dto.XcUserExt;

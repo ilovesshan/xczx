@@ -1,4 +1,4 @@
-package com.xczx.content.config;
+package com.xczx.feign.config;
 
 import feign.codec.Encoder;
 import feign.form.spring.SpringFormEncoder;
@@ -19,7 +19,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.OutputStream;
 
-
+/**
+ * Created with IntelliJ IDEA.
+ *
+ * @author: ilovesshan
+ * @date: 2023/5/2
+ * @description:
+ */
 @Configuration
 public class MultipartSupportConfig {
 
