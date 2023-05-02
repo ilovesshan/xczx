@@ -15,6 +15,7 @@
         <module>../xczx-message-sdk</module>
         <module>../xczx-search</module>
         <module>../xczx-auth</module>
+        <module>../xczx-checkcode</module>
     </modules>
     <packaging>pom</packaging>
 
