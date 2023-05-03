@@ -17,7 +17,7 @@ import com.xczx.content.model.vo.CourseBaseInfo;
  */
 
 public interface CourseBaseService {
-    PageResult<CourseBase> selectByConditionWithPage(PageParams pageParams, QueryCourseParamsDto dto);
+    PageResult<CourseBase> selectByConditionWithPage(String companyId, PageParams pageParams, QueryCourseParamsDto dto);
 
     CourseBaseInfo createBaseCourse(Long companyId, AddCourseDto addCourseDto);
 

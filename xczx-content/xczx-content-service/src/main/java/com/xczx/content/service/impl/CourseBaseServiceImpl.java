@@ -44,16 +44,18 @@ public class CourseBaseServiceImpl implements CourseBaseService {
     private CourseCategoryService courseCategoryService;
 
     @Override
-    public PageResult<CourseBase> selectByConditionWithPage(PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto) {
+    public PageResult<CourseBase> selectByConditionWithPage(String companyId, PageParams pageParams, QueryCourseParamsDto queryCourseParamsDto) {
         // 构建查询条件
         Page<CourseBase> page = new Page<>(pageParams.getPageNo(), pageParams.getPageSize());
         LambdaQueryWrapper<CourseBase> queryWrapper = new LambdaQueryWrapper<>();
         String courseName = queryCourseParamsDto.getCourseName();
         String auditStatus = queryCourseParamsDto.getAuditStatus();
         String publishStatus = queryCourseParamsDto.getPublishStatus();
+
         queryWrapper.like(StringUtils.hasText(courseName), CourseBase::getName, courseName);
         queryWrapper.eq(StringUtils.hasText(auditStatus), CourseBase::getAuditStatus, auditStatus);
         queryWrapper.eq(StringUtils.hasText(publishStatus), CourseBase::getStatus, publishStatus);
+        queryWrapper.eq(StringUtils.hasText(companyId), CourseBase::getCompanyId, companyId);
 
         // 查询数据
         Page<CourseBase> courseBasePage = courseBaseMapper.selectPage(page, queryWrapper);

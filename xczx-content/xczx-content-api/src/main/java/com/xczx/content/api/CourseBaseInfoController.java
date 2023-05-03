@@ -11,6 +11,7 @@ import com.xczx.content.service.CourseBaseService;
 import com.xczx.coonfig.SecurityUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,8 +34,11 @@ public class CourseBaseInfoController {
 
     @ApiOperation("课程列表查询")
     @PostMapping("/course/list")
+    @PreAuthorize("hasAuthority('xc_teachmanager_course_list')")
     public PageResult<CourseBase> list(PageParams pageParams, @RequestBody QueryCourseParamsDto queryCourseParamsDto) {
-        return courseBaseService.selectByConditionWithPage(pageParams, queryCourseParamsDto);
+        String companyId = SecurityUtil.getUser().getCompanyId();
+
+        return courseBaseService.selectByConditionWithPage(companyId,pageParams, queryCourseParamsDto);
     }
 
     @ApiOperation("新增课程基础信息")
@@ -59,6 +63,6 @@ public class CourseBaseInfoController {
     @ApiOperation("删除课程基础信息")
     @DeleteMapping("/course/{courseId}")
     public void deleteBaseCourse(@PathVariable("courseId") String courseId) {
-        courseBaseService.deleteBaseCourse(1001101L,courseId);
+        courseBaseService.deleteBaseCourse(1001101L, courseId);
     }
 }
