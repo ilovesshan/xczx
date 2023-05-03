@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: orders-service
+  cloud:
+    nacos:
+      server-addr: 192.168.1.131:8848
+      discovery:
+        namespace: ${spring.profiles.active}
+        group: xczx_plus_project
+      config:
+        namespace: ${spring.profiles.active}
+        group: xczx_plus_project
+        file-extension: yaml
+        refresh-enabled: true
+
+  profiles:
+    active: dev
+
+
+
