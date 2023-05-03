@@ -47,7 +47,10 @@ public class GlobalExceptionHandler {
     // 处理其他异常
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public RestExceptionResponse handlException(Exception e) {
+    public RestExceptionResponse handleException(Exception e) {
+        if ("不允许访问".equals(e.getMessage())) {
+            return new RestExceptionResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), null, null, "您暂时没有访问权限");
+        }
         String requestId = MDC.get("requestId");
         String requestTime = MDC.get("requestTime");
         log.error("Exception：", e);
