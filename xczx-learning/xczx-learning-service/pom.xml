@@ -10,6 +10,13 @@
     <artifactId>xczx-learning-service</artifactId>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.xczx</groupId>
+            <artifactId>xczx-openfign</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
         <dependency>
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>

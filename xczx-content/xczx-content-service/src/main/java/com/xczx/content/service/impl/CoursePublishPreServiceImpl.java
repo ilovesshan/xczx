@@ -10,6 +10,7 @@ import com.xczx.content.model.vo.CourseBaseInfo;
 import com.xczx.content.model.vo.CoursePreviewVo;
 import com.xczx.content.model.vo.TeachPlanBaseInfoVo;
 import com.xczx.content.service.*;
+import com.xczx.feign.content.model.CoursePublish;
 import com.xczx.messagesdk.model.po.MqMessage;
 import com.xczx.messagesdk.service.MqMessageService;
 import org.springframework.beans.BeanUtils;
@@ -155,6 +156,11 @@ public class CoursePublishPreServiceImpl extends ServiceImpl<CoursePublishPreMap
 
         //删除课程预发布表对应记录
         coursePublishPreMapper.deleteById(courseId);
+    }
+
+    @Override
+    public CoursePublish getCoursePublish(Long courseId) {
+        return coursePublishService.getById(courseId);
     }
 
     private void saveCoursePublish(Long courseId) {

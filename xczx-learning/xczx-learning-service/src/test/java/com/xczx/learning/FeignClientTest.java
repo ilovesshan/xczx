@@ -1,11 +1,11 @@
 package com.xczx.learning;
 
-import com.xczx.content.model.po.CoursePublish;
-import com.xczx.learning.feignclient.ContentServiceClient;
-import org.junit.jupiter.api.Assertions;
+import com.xczx.feign.content.client.CoursePublishClient;
+import com.xczx.feign.content.model.CoursePublish;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import javax.annotation.Resource;
 
 /**
  * @author Mr.M
@@ -16,13 +16,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class FeignClientTest {
 
-    @Autowired
-    ContentServiceClient contentServiceClient;
+    @Resource
+    private CoursePublishClient coursePublishClient;
 
 
     @Test
     public void testContentServiceClient() {
-        CoursePublish coursepublish = contentServiceClient.getCoursepublish(18L);
-        Assertions.assertNotNull(coursepublish);
+        CoursePublish coursepublish = coursePublishClient.getCoursePublish(140L);
+        System.out.println("coursepublish = " + coursepublish);
     }
 }

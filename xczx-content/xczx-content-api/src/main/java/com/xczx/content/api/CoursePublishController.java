@@ -1,5 +1,6 @@
 package com.xczx.content.api;
 
+import com.xczx.feign.content.model.CoursePublish;
 import com.xczx.content.model.vo.CoursePreviewVo;
 import com.xczx.content.service.CoursePublishPreService;
 import io.swagger.annotations.Api;
@@ -43,5 +44,12 @@ public class CoursePublishController {
     @PostMapping("/coursepublish/{courseId}")
     public void coursePublish(@PathVariable("courseId") Long courseId) {
         coursePublishPreService.coursePublish(1001101L, courseId);
+    }
+
+    @ApiOperation("查询课程发布信息")
+    @ResponseBody
+    @GetMapping("/r/coursepublish/{courseId}")
+    public CoursePublish getCoursePublish(@PathVariable("courseId") Long courseId) {
+        return coursePublishPreService.getCoursePublish(courseId);
     }
 }

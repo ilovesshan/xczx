@@ -1,6 +1,7 @@
 package com.xczx.content.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.xczx.feign.content.model.CoursePublish;
 import com.xczx.content.model.po.CoursePublishPre;
 import com.xczx.content.model.vo.CoursePreviewVo;
 
@@ -18,4 +19,6 @@ public interface CoursePublishPreService extends IService<CoursePublishPre> {
     void commitAudit(long companyId, Long courseId);
 
     void coursePublish(Long companyId, Long courseId);
+
+    CoursePublish getCoursePublish(Long courseId);
 }

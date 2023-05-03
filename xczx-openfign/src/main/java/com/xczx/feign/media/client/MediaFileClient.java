@@ -1,7 +1,7 @@
-package com.xczx.feign.medis.client;
+package com.xczx.feign.media.client;
 
 import com.xczx.feign.config.MultipartSupportConfig;
-import com.xczx.feign.medis.fallbackFactory.MediaFileClientFallbackFactory;
+import com.xczx.feign.media.fallbackFactory.MediaFileClientFallbackFactory;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;

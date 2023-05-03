@@ -2,7 +2,7 @@ package com.xczx.content.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.xczx.content.mapper.CoursePublishMapper;
-import com.xczx.content.model.po.CoursePublish;
+import com.xczx.feign.content.model.CoursePublish;
 import com.xczx.content.service.CoursePublishService;
 import org.springframework.stereotype.Service;
 

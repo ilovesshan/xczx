@@ -1,7 +1,7 @@
 package com.xczx.content.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.xczx.content.model.po.CoursePublish;
+import com.xczx.feign.content.model.CoursePublish;
 
 /**
  * Created with IntelliJ IDEA.

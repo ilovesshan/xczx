@@ -1,8 +1,5 @@
-package com.xczx.content.model.po;
+package com.xczx.feign.content.model;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -16,7 +13,7 @@ import java.time.LocalDateTime;
  * @author ilovesshan
  */
 @Data
-@TableName("course_publish")
+//@TableName("course_publish")
 public class CoursePublish implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -114,7 +111,7 @@ public class CoursePublish implements Serializable {
     /**
      * 发布时间
      */
-    @TableField(fill = FieldFill.INSERT)
+//    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createDate;
 
     /**

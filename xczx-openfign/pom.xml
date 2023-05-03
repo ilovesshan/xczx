@@ -12,11 +12,6 @@
     <artifactId>xczx-openfign</artifactId>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter</artifactId>-->
-<!--        </dependency>-->
-
         <!-- Spring Cloud 微服务远程调用 -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>

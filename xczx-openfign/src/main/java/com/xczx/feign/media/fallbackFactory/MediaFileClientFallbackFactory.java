@@ -1,6 +1,6 @@
-package com.xczx.feign.medis.fallbackFactory;
+package com.xczx.feign.media.fallbackFactory;
 
-import com.xczx.feign.medis.client.MediaFileClient;
+import com.xczx.feign.media.client.MediaFileClient;
 import feign.hystrix.FallbackFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

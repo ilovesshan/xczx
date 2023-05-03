@@ -2,7 +2,7 @@
 package com.xczx.content;
 
 import com.xczx.feign.config.MultipartSupportConfig;
-import com.xczx.feign.medis.client.MediaFileClient;
+import com.xczx.feign.media.client.MediaFileClient;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.multipart.MultipartFile;

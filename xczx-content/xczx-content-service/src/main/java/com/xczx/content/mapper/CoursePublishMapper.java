@@ -1,7 +1,7 @@
 package com.xczx.content.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.xczx.content.model.po.CoursePublish;
+import com.xczx.feign.content.model.CoursePublish;
 
 /**
  * Created with IntelliJ IDEA.
