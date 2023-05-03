@@ -1,4 +1,4 @@
-package com.xuecheng.checkcode;
+package com.xczx.checkcode;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

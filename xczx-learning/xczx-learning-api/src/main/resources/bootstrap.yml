@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: learning-api
+  cloud:
+    nacos:
+      server-addr: 192.168.1.131:8848
+      discovery:
+        namespace: xczx_dev
+        group: xczx_plus_project
+      config:
+        namespace: xczx_dev
+        group: xczx_plus_project
+        file-extension: yaml
+        refresh-enabled: true
+        extension-configs:
+          - data-id: learning-service-${spring.profiles.active}.yaml
+            group: xczx_plus_project
+            refresh: true
+        shared-configs:
+          - data-id: swagger-${spring.profiles.active}.yaml
+            group: xczx_plus_common
+            refresh: true
+
+          - data-id: feign-${spring.profiles.active}.yaml
+            group: xczx_plus_common
+            refresh: true
+
+  profiles:
+    active: dev
+
