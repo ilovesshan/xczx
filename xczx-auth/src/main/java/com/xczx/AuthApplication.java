@@ -4,6 +4,9 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.client.OkHttp3ClientHttpRequestFactory;
+import org.springframework.web.client.RestTemplate;
 
 @MapperScan("com.xczx.ucenter.mapper")
 @EnableFeignClients(basePackages = {"com.xczx.feign"})
@@ -14,4 +17,8 @@ public class AuthApplication {
         SpringApplication.run(AuthApplication.class, args);
     }
 
+    @Bean
+    RestTemplate restTemplate() {
+        return new RestTemplate(new OkHttp3ClientHttpRequestFactory());
+    }
 }
