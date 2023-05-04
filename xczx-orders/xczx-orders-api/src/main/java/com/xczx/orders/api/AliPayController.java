@@ -36,7 +36,7 @@ import java.util.Map;
 public class AliPayController {
 
 //    @ApiOperation("订单支付结果三方回调接口")
-    @PostMapping("/payResultNotify")
+    @PostMapping("/payResultNotifytest")
     public void payResultNotify(HttpServletRequest request, HttpServletResponse response) throws IOException, AlipayApiException {
         Map<String, String> params = new HashMap<>();
         Map requestParams = request.getParameterMap();

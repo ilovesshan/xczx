@@ -99,7 +99,7 @@ public class OrderServiceImpl implements OrderService {
         PayStatusDto aliPayPayStatus = getAliPayPayStatus(payRecord.getOrderId(), payNo);
         // 支付成功
         if ("TRADE_SUCCESS".equals(aliPayPayStatus.getTrade_status())) {
-            payRecord = orderServiceProxy.saveAlipayOrderStatus(aliPayPayStatus.getOut_trade_no(), payRecord.getOrderId(), payRecord.getId());
+            payRecord = orderServiceProxy.saveAlipayOrderStatus(aliPayPayStatus.getOut_trade_no(), payRecord.getPayNo());
             BeanUtils.copyProperties(payRecord, payRecordDto);
             return payRecordDto;
         }
@@ -151,19 +151,25 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public XcPayRecord saveAlipayOrderStatus(String outTradNo, Long orderId, Long payId) {
+    public XcPayRecord saveAlipayOrderStatus(String outTradNo, Long payNo) {
         // 前置条件判断
-        XcOrders orders = ordersMapper.selectById(orderId);
-        XcPayRecord payRecord = payRecordMapper.selectById(payId);
-        if (orders == null || payRecord == null) {
+        XcPayRecord payRecord = payRecordMapper.selectOne(new LambdaQueryWrapper<XcPayRecord>().eq(XcPayRecord::getPayNo, payNo));
+        if (payRecord == null) {
             throw new XczxException("未查询到该条订单记录");
         }
+
+        Long orderId = payRecord.getOrderId();
+        XcOrders orders = ordersMapper.selectById(orderId);
+        if (orders == null) {
+            throw new XczxException("未查询到该条订单记录");
+        }
+
         if ("600002".equals(orders.getStatus())) {
-            log.debug("订单已支付，orderId = {}， payNo = {}", orderId, payId);
+            log.debug("订单已支付，orderId = {}， payNo = {}", orderId, payNo);
             return payRecord;
         }
         if ("601002".equals(payRecord.getStatus())) {
-            log.debug("订单已支付，orderId = {}， payNo = {}", orderId, payId);
+            log.debug("订单已支付，orderId = {}， payNo = {}", orderId, payNo);
             return payRecord;
         }
 

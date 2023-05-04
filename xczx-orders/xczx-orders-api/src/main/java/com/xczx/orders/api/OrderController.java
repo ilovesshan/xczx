@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.xczx.base.exception.XczxException;
 import com.xczx.base.config.AlipayConfig;
@@ -15,6 +16,7 @@ import com.xczx.orders.util.SecurityUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,8 +24,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -40,6 +46,9 @@ public class OrderController {
 
     @Resource
     private OrderService orderService;
+
+    @Value("${pay.notifyUrl}")
+    private String notifyUrl;
 
     @ApiOperation("生成支付二维码")
     @PostMapping("/generatepaycode")
@@ -69,7 +78,7 @@ public class OrderController {
         AlipayTradeWapPayRequest alipayRequest = new AlipayTradeWapPayRequest();
         // 异步接收地址，仅支持http/https，公网可访问
         // alipayRequest.setReturnUrl("http://domain.com/CallBack/return_url.jsp");
-        // alipayRequest.setNotifyUrl("https://548e0e8e.cpolar.io/orders/payResultNotify");
+        alipayRequest.setNotifyUrl(notifyUrl);
 
         JSONObject bizContent = new JSONObject();
         bizContent.put("out_trade_no", payNo);
@@ -92,5 +101,40 @@ public class OrderController {
     @ResponseBody
     public PayRecordDto getPayResult(String payNo) throws IOException {
         return orderService.getPayResult(payNo);
+    }
+
+    @PostMapping("/payResultNotify")
+    public void payResultNotify(HttpServletRequest request, HttpServletResponse response) throws IOException, AlipayApiException {
+        Map<String, String> params = new HashMap<>();
+        Map requestParams = request.getParameterMap();
+        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
+            String name = (String) iter.next();
+            String[] values = (String[]) requestParams.get(name);
+            String valueStr = "";
+            for (int i = 0; i < values.length; i++) {
+                valueStr = (i == values.length - 1) ? valueStr + values[i]
+                        : valueStr + values[i] + ",";
+            }
+            params.put(name, valueStr);
+        }
+
+        boolean verify_result = AlipaySignature.rsaCheckV1(params, AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.CHARSET, "RSA2");
+
+        //验证成功
+        if (verify_result) {
+            //商户订单号
+            String out_trade_no = new String(request.getParameter("out_trade_no").getBytes("ISO-8859-1"), "UTF-8");
+            //支付宝交易号
+            String trade_no = new String(request.getParameter("trade_no").getBytes("ISO-8859-1"), "UTF-8");
+            //交易状态
+            String trade_status = new String(request.getParameter("trade_status").getBytes("ISO-8859-1"), "UTF-8");
+            //交易成功
+            if ("TRADE_SUCCESS".equals(trade_status)) {
+                orderService.saveAlipayOrderStatus(trade_no, Long.valueOf(out_trade_no));
+            }
+            response.getWriter().write("success");
+        } else {
+            response.getWriter().write("fail");
+        }
     }
 }

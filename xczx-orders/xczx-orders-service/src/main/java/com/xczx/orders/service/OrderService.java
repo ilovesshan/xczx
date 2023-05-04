@@ -27,5 +27,5 @@ public interface OrderService {
     PayStatusDto getAliPayPayStatus(Long orderId, String payNo);
 
     // 更新订单状态（支付宝）
-    XcPayRecord saveAlipayOrderStatus(String outTradNo, Long orderId, Long payId);
+    XcPayRecord saveAlipayOrderStatus(String outTradNo, Long payId);
 }
