@@ -24,10 +24,10 @@
         <div class="banner-bg"></div>
         <div class="banner-info">
             <div class="banner-left">
-                <p>${model.courseBase.mtName!''}<span> ${model.courseBase.stName!''}</span></p>
+                <p>${model.courseBase.mtName}<span>\ ${model.courseBase.stName}</span></p>
                 <p class="tit">${model.courseBase.name}</p>
                 <p class="pic">
-                    <#if model.courseBase.charge == '201000'>
+                    <#if model.courseBase.charge=='201000'>
                         <span class="new-pic">免费</span>
                     <#else>
                         <span class="new-pic">特惠价格￥${model.courseBase.price!''}</span>
@@ -624,7 +624,7 @@
                 </div>
             </div>
             <div class="fact-pic">实际支付: <span>￥${model.courseBase.price!''}元</span></div>
-            <div class="go-pay"><a href="#" @click.prevent="wxPay()">微信支付</a><a href="#" @click.prevent="aliPay()">支付宝支付</a><a href="#" @click.prevent="startLearngin()">试学</a></div>
+            <div class="go-pay"><a href="#" @click.prevent="wxPay()">微信支付</a><a href="#" @click.prevent="aliPay()">支付宝支付</a><a href="#" @click.prevent="querypayresult()">支付完成</a><a href="#" @click.prevent="startLearngin()">试学</a></div>
         </div>
         <!--支付弹窗- end -->
         <div class="popup-comment-box">
@@ -636,6 +636,6 @@
     <!--#include virtual="/include/footer.html"-->
     <!--底部版权-->
 </div>
-<script>var courseId = "${model.courseBase.id}";var courseCharge = "${model.courseBase.charge!''}"</script>
+<script>var courseId = "${model.courseBase.id}";var courseCharge = "${model.courseBase.charge}"</script>
 <!--#include virtual="/include/course_detail_dynamic.html"-->
 </body>

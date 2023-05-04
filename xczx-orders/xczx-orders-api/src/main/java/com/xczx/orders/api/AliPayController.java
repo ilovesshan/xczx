@@ -31,9 +31,11 @@ import java.util.Map;
  * @description:
  */
 
+//@Api(value = "订单支付接口", tags = "订单支付接口")
 @Controller
 public class AliPayController {
 
+//    @ApiOperation("订单支付结果三方回调接口")
     @PostMapping("/payResultNotify")
     public void payResultNotify(HttpServletRequest request, HttpServletResponse response) throws IOException, AlipayApiException {
         Map<String, String> params = new HashMap<>();
@@ -98,6 +100,7 @@ public class AliPayController {
     }
 
 
+//    @ApiOperation("订单支付")
     @GetMapping("/pay")
     public void pay(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws ServletException, IOException, AlipayApiException {
         AlipayClient alipayClient = new DefaultAlipayClient(
@@ -127,6 +130,7 @@ public class AliPayController {
     }
 
 
+//    @ApiOperation("查询订单支付状态")
     @GetMapping("/selectOrder/{orderId}")
     @ResponseBody
     public AlipayTradeQueryResponse selectOrder(@PathVariable("orderId") String orderId) throws AlipayApiException {
