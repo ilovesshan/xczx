@@ -1,4 +1,4 @@
-package com.xczx.orders.config;
+package com.xczx.base.config;
 
 /**
  * @author Mr.M

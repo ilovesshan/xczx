@@ -1,7 +1,14 @@
 package com.xczx.orders.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.request.AlipayTradeQueryRequest;
+import com.alipay.api.response.AlipayTradeQueryResponse;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.xczx.base.config.AlipayConfig;
 import com.xczx.base.exception.XczxException;
 import com.xczx.base.utils.IdWorkerUtils;
 import com.xczx.base.utils.QRCodeUtil;
@@ -10,6 +17,7 @@ import com.xczx.orders.mapper.XcOrdersMapper;
 import com.xczx.orders.mapper.XcPayRecordMapper;
 import com.xczx.orders.model.dto.AddOrderDto;
 import com.xczx.orders.model.dto.PayRecordDto;
+import com.xczx.orders.model.dto.PayStatusDto;
 import com.xczx.orders.model.po.XcOrders;
 import com.xczx.orders.model.po.XcOrdersGoods;
 import com.xczx.orders.model.po.XcPayRecord;
@@ -46,6 +54,9 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     private XcPayRecordMapper payRecordMapper;
 
+    @Resource
+    private OrderService orderServiceProxy;
+
     @Value("${pay.qrcodeurl}")
     private String qrcodeurl;
 
@@ -77,6 +88,54 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
+    @Override
+    public PayRecordDto getPayResult(String payNo) {
+        PayRecordDto payRecordDto = new PayRecordDto();
+        // 调用支付宝SDK通过订单号查询支付结果
+        XcPayRecord payRecord = getPayRecordByPayNo(payNo);
+        if (payRecord == null) {
+            throw new XczxException("未查询到该条订单记录");
+        }
+        PayStatusDto aliPayPayStatus = getAliPayPayStatus(payRecord.getOrderId(), payNo);
+        // 支付成功
+        if ("TRADE_SUCCESS".equals(aliPayPayStatus.getTrade_status())) {
+            payRecord = orderServiceProxy.saveAlipayOrderStatus(aliPayPayStatus.getOut_trade_no(), payRecord.getOrderId(), payRecord.getId());
+            BeanUtils.copyProperties(payRecord, payRecordDto);
+            return payRecordDto;
+        }
+        return payRecordDto;
+    }
+
+    @Override
+    public PayStatusDto getAliPayPayStatus(Long orderId, String payNo) {
+        PayStatusDto payStatus = new PayStatusDto();
+        AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.URL, AlipayConfig.APPID, AlipayConfig.RSA_PRIVATE_KEY, AlipayConfig.FORMAT, AlipayConfig.CHARSET, AlipayConfig.ALIPAY_PUBLIC_KEY, AlipayConfig.SIGNTYPE);
+        AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
+        JSONObject bizContent = new JSONObject();
+        bizContent.put("out_trade_no", payNo);
+        request.setBizContent(bizContent.toString());
+        AlipayTradeQueryResponse response = null;
+        try {
+            response = alipayClient.execute(request);
+        } catch (AlipayApiException e) {
+            log.error("调用支付宝SDK通过订单号查询支付结果【失败】orderId = {}, payNo = {}", orderId, payNo, e);
+            throw new XczxException("该笔订单交易不存在");
+        }
+        if (response.isSuccess()) {
+            log.debug("调用支付宝SDK通过订单号查询支付结果【成功】orderId = {}, payNo = {}", orderId, payNo);
+            payStatus.setTrade_status(response.getTradeStatus());
+            payStatus.setApp_id(AlipayConfig.APPID);
+            payStatus.setTotal_amount(response.getTotalAmount());
+            payStatus.setTrade_no(response.getTradeNo());
+            payStatus.setOut_trade_no(response.getOutTradeNo());
+            return payStatus;
+        } else {
+            log.error("调用支付宝SDK通过订单号查询支付结果【失败】orderId = {}, payNo = {}", orderId, payNo);
+        }
+        return null;
+    }
+
+
     private String generatorQrCode(Long payNo) {
         String code = "";
         try {
@@ -88,6 +147,44 @@ public class OrderServiceImpl implements OrderService {
         }
         return code;
     }
+
+
+    @Override
+    @Transactional
+    public XcPayRecord saveAlipayOrderStatus(String outTradNo, Long orderId, Long payId) {
+        // 前置条件判断
+        XcOrders orders = ordersMapper.selectById(orderId);
+        XcPayRecord payRecord = payRecordMapper.selectById(payId);
+        if (orders == null || payRecord == null) {
+            throw new XczxException("未查询到该条订单记录");
+        }
+        if ("600002".equals(orders.getStatus())) {
+            log.debug("订单已支付，orderId = {}， payNo = {}", orderId, payId);
+            return payRecord;
+        }
+        if ("601002".equals(payRecord.getStatus())) {
+            log.debug("订单已支付，orderId = {}， payNo = {}", orderId, payId);
+            return payRecord;
+        }
+
+        // 更新订单表订单状态
+        orders.setStatus("600002");
+        int affectRows = ordersMapper.updateById(orders);
+
+
+        // 更新订单支付记录表的订单状态、支付流水号、支付渠道、支付成功时间
+        payRecord.setStatus("601002");
+        payRecord.setOutPayNo(outTradNo);
+        payRecord.setOutPayChannel("Alipay");
+        payRecord.setPaySuccessTime(LocalDateTime.now());
+        affectRows += payRecordMapper.updateById(payRecord);
+
+        if (affectRows != 2) {
+            throw new XczxException("数据表状态更新失败");
+        }
+        return payRecord;
+    }
+
 
     private XcPayRecord savePayRecord(XcOrders orders) {
         Long ordersId = orders.getId();

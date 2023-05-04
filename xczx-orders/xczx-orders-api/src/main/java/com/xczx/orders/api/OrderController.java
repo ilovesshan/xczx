@@ -6,7 +6,7 @@ import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.xczx.base.exception.XczxException;
-import com.xczx.orders.config.AlipayConfig;
+import com.xczx.base.config.AlipayConfig;
 import com.xczx.orders.model.dto.AddOrderDto;
 import com.xczx.orders.model.dto.PayRecordDto;
 import com.xczx.orders.model.po.XcPayRecord;
@@ -84,5 +84,13 @@ public class OrderController {
         // 直接将完整的表单html输出到页面（手机端会自动拉起支付宝应用用于三方支付）
         httpResponse.getWriter().write(form);
         httpResponse.getWriter().flush();
+    }
+
+
+    @ApiOperation("查询支付结果")
+    @GetMapping("/payresult")
+    @ResponseBody
+    public PayRecordDto getPayResult(String payNo) throws IOException {
+        return orderService.getPayResult(payNo);
     }
 }
