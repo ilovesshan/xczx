@@ -33,6 +33,13 @@
         </dependency>
 
         <dependency>
+            <groupId>com.xczx.content.model</groupId>
+            <artifactId>xczx-content-model</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.xczx</groupId>
             <artifactId>xczx-learning-model</artifactId>
             <version>1.0.0</version>
@@ -77,11 +84,11 @@
             <groupId>com.xuxueli</groupId>
             <artifactId>xxl-job-core</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>com.xczx.content.model</groupId>
-            <artifactId>xczx-content-model</artifactId>
-            <version>1.0.0</version>
-            <scope>compile</scope>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
         </dependency>
+
     </dependencies>
 </project>

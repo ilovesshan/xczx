@@ -16,8 +16,13 @@ spring:
           - data-id: orders-service-${spring.profiles.active}.yaml
             group: xczx_plus_project
             refresh: true
+
         shared-configs:
           - data-id: swagger-${spring.profiles.active}.yaml
+            group: xczx_plus_common
+            refresh: true
+
+          - data-id: rabbitmq-${spring.profiles.active}.yaml
             group: xczx_plus_common
             refresh: true
 
