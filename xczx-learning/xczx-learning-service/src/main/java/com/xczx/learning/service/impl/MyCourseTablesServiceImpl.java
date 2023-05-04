@@ -11,6 +11,7 @@ import com.xczx.learning.model.dto.XcCourseTablesDto;
 import com.xczx.learning.model.po.XcChooseCourse;
 import com.xczx.learning.model.po.XcCourseTables;
 import com.xczx.learning.service.MyCourseTablesService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ import java.util.List;
  * @description:
  */
 
+@Slf4j
 @Service
 public class MyCourseTablesServiceImpl implements MyCourseTablesService {
 
@@ -92,6 +94,38 @@ public class MyCourseTablesServiceImpl implements MyCourseTablesService {
             xcCourseTablesDto.setLearnStatus("702001");
             return xcCourseTablesDto;
         }
+    }
+
+    @Override
+    @Transactional
+    public boolean saveChooseCourseStatus(String chooseCourseId) {
+
+        XcChooseCourse xcChooseCourse = xcChooseCourseMapper.selectById(chooseCourseId);
+        if (xcChooseCourse == null) {
+            log.error("添加课程到课程表时，未从选课表中插入该{}ID对应的记录", chooseCourseId);
+            return false;
+        }
+
+        if ("701001".equals(xcChooseCourse.getStatus())) {
+            log.error("添加课程到课程表时，查询到{}ID对应的记录已完成支付", chooseCourseId);
+            return false;
+        }
+
+        xcChooseCourse.setStatus("701001");
+        int affectRows = xcChooseCourseMapper.updateById(xcChooseCourse);
+        if (affectRows <= 0) {
+            log.error("添加课程到课程表时，更新选课表状态为选课成功时失败，ID = {}", chooseCourseId);
+            throw new XczxException("更新选课表状态失败");
+        }
+        XcCourseTables xcCourseTables = new XcCourseTables();
+        BeanUtils.copyProperties(xcChooseCourse, xcCourseTables);
+        xcCourseTables.setChooseCourseId(Long.valueOf(chooseCourseId));
+        affectRows = xcCourseTablesMapper.insert(xcCourseTables);
+        if (affectRows <= 0) {
+            log.error("添加课程到课程表失败，ID = {}", chooseCourseId);
+            throw new XczxException("添加课程到课程表失败");
+        }
+        return true;
     }
 
     // 添加收费课程逻辑

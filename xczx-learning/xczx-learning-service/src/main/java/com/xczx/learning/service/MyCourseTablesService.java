@@ -13,5 +13,7 @@ import com.xczx.learning.model.dto.XcCourseTablesDto;
 public interface MyCourseTablesService {
     XcChooseCourseDto addChooseCourse(String userId, Long courseId);
 
-     XcCourseTablesDto getLearningStatus(String userId, Long courseId);
+    XcCourseTablesDto getLearningStatus(String userId, Long courseId);
+
+    boolean saveChooseCourseStatus(String chooseCourseId);
 }

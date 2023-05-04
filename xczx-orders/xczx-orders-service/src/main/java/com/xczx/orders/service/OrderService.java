@@ -1,5 +1,6 @@
 package com.xczx.orders.service;
 
+import com.xczx.messagesdk.model.po.MqMessage;
 import com.xczx.orders.model.dto.AddOrderDto;
 import com.xczx.orders.model.dto.PayRecordDto;
 import com.xczx.orders.model.dto.PayStatusDto;
@@ -28,4 +29,7 @@ public interface OrderService {
 
     // 更新订单状态（支付宝）
     XcPayRecord saveAlipayOrderStatus(String outTradNo, Long payId);
+
+    // 发送通知结果
+    void notifyPayResult(MqMessage message);
 }
