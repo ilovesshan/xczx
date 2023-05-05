@@ -31,7 +31,7 @@
     </appender>
 
     <!-- Service包及其子包 日志级别DEBUG -->
-    <logger name="com.xczx.content.service" level="DEBUG"/>
+    <logger name="com.xczx.orders.service" level="DEBUG"/>
 
     <!-- 日志输出级别 -->
     <root level="INFO">

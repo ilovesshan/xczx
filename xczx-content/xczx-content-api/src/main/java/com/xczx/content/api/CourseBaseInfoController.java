@@ -2,13 +2,13 @@ package com.xczx.content.api;
 
 import com.xczx.base.model.dto.PageParams;
 import com.xczx.base.model.vo.PageResult;
+import com.xczx.config.SecurityUtil;
 import com.xczx.content.model.dto.AddCourseDto;
 import com.xczx.content.model.dto.QueryCourseParamsDto;
 import com.xczx.content.model.dto.UpdateCourseDto;
 import com.xczx.content.model.po.CourseBase;
 import com.xczx.content.model.vo.CourseBaseInfo;
 import com.xczx.content.service.CourseBaseService;
-import com.xczx.coonfig.SecurityUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,8 +37,7 @@ public class CourseBaseInfoController {
     @PreAuthorize("hasAuthority('xc_teachmanager_course_list')")
     public PageResult<CourseBase> list(PageParams pageParams, @RequestBody QueryCourseParamsDto queryCourseParamsDto) {
         String companyId = SecurityUtil.getUser().getCompanyId();
-
-        return courseBaseService.selectByConditionWithPage(companyId,pageParams, queryCourseParamsDto);
+        return courseBaseService.selectByConditionWithPage(companyId, pageParams, queryCourseParamsDto);
     }
 
     @ApiOperation("新增课程基础信息")
@@ -50,7 +49,6 @@ public class CourseBaseInfoController {
     @ApiOperation("课程详情查询")
     @GetMapping("/course/{id}")
     public CourseBaseInfo selectById(@PathVariable("id") Long id) {
-        SecurityUtil.XcUser user = SecurityUtil.getUser();
         return courseBaseService.selectCourseBaseInfoById(id);
     }
 

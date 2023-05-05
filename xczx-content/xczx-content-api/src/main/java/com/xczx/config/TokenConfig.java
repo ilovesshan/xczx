@@ -1,4 +1,4 @@
-package com.xczx.coonfig;
+package com.xczx.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

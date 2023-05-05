@@ -59,7 +59,6 @@ public class LocalDateTimeConfig {
         objectMapper.registerModule(module);
         return objectMapper;
     }
-
     /**
      * 解决方法:添加这个类进行序列化解析
      * 会自动识别

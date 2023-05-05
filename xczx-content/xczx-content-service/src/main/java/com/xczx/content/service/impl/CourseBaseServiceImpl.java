@@ -15,6 +15,7 @@ import com.xczx.content.model.vo.CourseBaseInfo;
 import com.xczx.content.service.CourseBaseService;
 import com.xczx.content.service.CourseCategoryService;
 import com.xczx.content.service.CourseMarketService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +33,7 @@ import java.util.Objects;
  * @description:
  */
 
+@Slf4j
 @Service
 public class CourseBaseServiceImpl implements CourseBaseService {
     @Resource
@@ -103,7 +105,6 @@ public class CourseBaseServiceImpl implements CourseBaseService {
 
     @Override
     public CourseBaseInfo selectCourseBaseInfoById(Long courseId) {
-
         CourseBase base = courseBaseMapper.selectById(courseId);
         CourseMarket market = courseMarketService.getById(courseId);
 

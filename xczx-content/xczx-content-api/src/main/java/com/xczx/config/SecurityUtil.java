@@ -1,4 +1,4 @@
-package com.xczx.coonfig;
+package com.xczx.config;
 
 import com.alibaba.fastjson.JSON;
 import lombok.Data;
